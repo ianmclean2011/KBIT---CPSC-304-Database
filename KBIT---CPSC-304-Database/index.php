@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Team KBIT</title>
+    <title>Team K-BIT - Wedding Planner</title>
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -17,7 +17,6 @@
     <![endif]-->
   </head>
   <body>
-
         <div class="container">
 
       <!-- Static navbar -->
@@ -35,9 +34,10 @@
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
               <li class="active"><a href="#">Home</a></li>
-              <li><a href="#">Vendors</a></li>
+              <li><a href="index.php?page=guest">Guests</a></li>
               <li><a href="#">Venues</a></li>
- 			  <li><a href="#">Guests</a></li>
+ 			  <li><a href="#">Vendors</a></li>
+
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
                 <ul class="dropdown-menu">
@@ -58,8 +58,7 @@
       <!-- Main component for a primary marketing message or call to action -->
       <div class="jumbotron">
         <h1>Team KBIT!!!</h1>
-        <p>
-<?php
+        <br> SQL Server Status: <?php
 if ($c=OCILogon("ora_p7m5", "a62141049", "ug")) {
   echo "Successfully connected to Oracle.\n";
   OCILogoff($c);
@@ -68,35 +67,20 @@ if ($c=OCILogon("ora_p7m5", "a62141049", "ug")) {
   echo "Oracle Connect Error " . $err['message'];
 }
 ?>
- <form class="form-signin" role="form">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="email" class="form-control" placeholder="Email address" required autofocus>
-        <input type="password" class="form-control" placeholder="Password" required>
-        <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      </form>
-
-<form method="post" action="<?php echo $_SERVER["PHP_SELF"];?>">
-
-<div class="input-group">
-
-  <input type="text" class="form-control" placeholder="Message">
-  <button class="btn btn-default" type="submit">Send</button>
-</div>
-</form>
-</p>
         <p>
-          <a class="btn btn-lg btn-primary" href="http://google.ca" role="button">Google</a>
-        </p>
+		<?php
+			$page = $_GET['page'];	/* gets the variable $page */
+			if (!empty($page)) {
+				$page .= ".php";
+				include($page);
+			} 	/* if $page has a value, include it */
+			else {
+			} 	/* otherwise, include the default page */
+		?>
+
       </div>
 
     </div> <!-- /container -->
-<?php
-   echo "Hello Team KBIT, this is some basic PHP";
-
-?>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->

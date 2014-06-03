@@ -33,21 +33,13 @@
           </div>
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="index.php?page=guest">Guests</a></li>
-              <li><a href="#">Venues</a></li>
- 			  <li><a href="#">Vendors</a></li>
+              <li class="active"><a href="index.php">Home</a></li>
 
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                <a href="index.php?page=guest" class="dropdown-toggle" data-toggle="dropdown">Guests<b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li class="divider"></li>
-                  <li class="dropdown-header">Nav header</li>
-                  <li><a href="#">Separated link</a></li>
-                  <li><a href="#">One more separated link</a></li>
+                  <li><a href="index.php?page=guest">GuestList</a></li>
+                  <li><a href="index.php?page=guest">Add Guests</a></li>
                 </ul>
               </li>
             </ul>
@@ -67,7 +59,6 @@ if ($c=OCILogon("ora_p7m5", "a62141049", "ug")) {
   echo "Oracle Connect Error " . $err['message'];
 }
 ?>
-        <p>
 		<?php
 			$page = $_GET['page'];	/* gets the variable $page */
 			if (!empty($page)) {

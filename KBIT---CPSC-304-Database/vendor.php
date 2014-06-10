@@ -35,10 +35,10 @@
 					<div class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
 							<li>
-								<a href="guest.php?page=guest-home">Home</a>
+								<a href="guest.php?page=vendor-home">Home</a>
 							</li>
 							<li>
-								<a href="guest.php?page=rsvp">RSVP</a>
+								<a href="guest.php?page=add-quote">Add Quote</a>
 							</li>
 						</ul>
 					</div>
@@ -56,10 +56,9 @@
 						include ($page);
 					}/* if $page has a value, include it */
 					else {
-						include ("guest-home.php");
+						include ("vendor-home.php");
 					}	/* otherwise, include the default page */
 				?>
-
 			</div>
 				SQL Server Status: <?php
 				if ($c = OCILogon("ora_p7m5", "a62141049", "ug")) {

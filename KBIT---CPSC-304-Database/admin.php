@@ -34,12 +34,70 @@
 
 					<div class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
-							<li>
-								<a href="guest.php?page=guest-home">Home</a>
+							<li class="dropdown">
+								<a href="admin.php?page=guest" class="dropdown-toggle" data-toggle="dropdown">Guests<b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="admin.php?page=guestlist">GuestList</a>
+									</li>
+									<li>
+										<a href="admin.php?page=add-guest">Add Guest</a>
+									</li>
+									<li>
+										<a href="admin.php?page=tables">Tables</a>
+									</li>
+								</ul>
 							</li>
-							<li>
-								<a href="guest.php?page=rsvp">RSVP</a>
+
+							<li class="dropdown">
+								<a href="admin.php?page=guest" class="dropdown-toggle" data-toggle="dropdown">Venues<b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="admin.php?page=venues">Venues</a>
+									</li>
+									<li>
+										<a href="admin.php?page=add-venue">Add Venue</a>
+									</li>
+
+								</ul>
 							</li>
+
+							<li class="dropdown">
+								<a href="admin.php?page=guest" class="dropdown-toggle" data-toggle="dropdown">Vendors<b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="admin.php?page=vendorlist">Vendors</a>
+									</li>
+									<li>
+										<a href="admin.php?page=add-vendor">Add Vendor</a>
+									</li>
+								</ul>
+							</li>
+							
+							<li class="dropdown">
+								<a href="admin.php?page=guest" class="dropdown-toggle" data-toggle="dropdown">Supplies<b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="admin.php?page=supplylist">Supplies</a>
+									</li>
+									<li>
+										<a href="admin.php?page=add-supply">Add Supplies</a>
+									</li>
+								</ul>
+							</li>
+
+							<li class="dropdown">
+								<a href="admin.php?page=guest" class="dropdown-toggle" data-toggle="dropdown">Reports<b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="admin.php?page=reports">Reports</a>
+									</li>
+									<li>
+										<a href="admin.php?page=generate-report">Generate Report</a>
+									</li>
+								</ul>
+							</li>
+
 						</ul>
 					</div>
 
@@ -56,7 +114,7 @@
 						include ($page);
 					}/* if $page has a value, include it */
 					else {
-						include ("guest-home.php");
+						include ("add-guest.php");
 					}	/* otherwise, include the default page */
 				?>
 

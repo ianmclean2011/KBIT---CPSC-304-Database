@@ -16,25 +16,44 @@
 		<h2>
 		<?php
 			//Change code later to find out all venue that are being used
-			$accepted = executePlainSQL("select vAccepted from v_InvitedTo where gid = ". $_GET[id] . "and vid = 1");
-			$acceptedRow = OCI_Fetch_Array($accepted, OCI_BOTH);
 			
-			$venueUse = executePlainSQL("select * from venue where vid = 1");
-			$venueUseRow = OCI_Fetch_Array($venueUse, OCI_BOTH);
 			
-			if($acceptedRow["VACCEPTED"] == NULL){
-				echo "<br>You have been invited to the " . $venueUseRow["USAGE"] . ".<br>";
-				echo "Will you be attending?<br>";
-				echo "<button type=\"submit\" class=\"btn btn-default\" name=\"yes1\" value=\"yes\">Yes</button>".
-				"<button type=\"submit\" class=\"btn btn-default\" name=\"no1\" value=\"no\">No</button>";
-			}
-			else {
-				if($acceptedRow["VACCEPTED"] == 0)
-					echo "<br>We're sorry you cant attend the " . $venueUseRow["USAGE"];
-				if($acceptedRow["VACCEPTED"] == 1)
+
+			
+			$allVenueCodes = executePlainSQL("select vID from Venue");
+			
+			while($allVenueCodesRows = OCI_Fetch_Array($allVenueCodes, OCI_BOTH)){
+				$venueUse = executePlainSQL("select * from venue where vid = " . $allVenueCodesRows["VID"]);
+				$venueUseRow = OCI_Fetch_Array($venueUse, OCI_BOTH);	
+					
+				$accepted = executePlainSQL("select vAccepted from v_InvitedTo where gid = ". $_GET[id] . "and vid = " . $allVenueCodesRows["VID"]);
+
+				$acceptedRow = OCI_Fetch_Array($accepted, OCI_BOTH);	
+								
+								
+				if($acceptedRow["VACCEPTED"] == NULL){
+					echo "<br>You have been invited to the " . $venueUseRow["USAGE"] . ".<br>";
+					echo "Will you be attending?<br>";
+					echo "<button type=\"submit\" class=\"btn btn-default\" name=\"yes\" value=\"yes\">Yes</button>".
+					"<button type=\"submit\" class=\"btn btn-default\" name=\"no\" value=\"no\">No</button>";
+					if (array_key_exists('no', $_POST)) {
+						$result = executePlainSQL("update v_InvitedTo set vAccepted = 0 where gid = " . $_GET[id] . "and vid = " . $allVenueCodesRows["VID"]);
+						echo $allVenueCodesRows["VID"];
+						OCICommit($db_conn);
+					}
+					else if (array_key_exists('yes', $_POST)) {
+						$result = executePlainSQL("update v_InvitedTo set vAccepted = 1 where gid = " . $_GET[id] . "and vid = " . $allVenueCodesRows["VID"]);
+						echo $allVenueCodesRows["VID"];
+						OCICommit($db_conn);
+					}
+					
+				}
+				else if($acceptedRow["VACCEPTED"] == 0)
+					echo "<br>We're sorry you cant attend the " . $venueUseRow["USAGE"] . ".";
+				else if($acceptedRow["VACCEPTED"] == 1)
 					echo "<br>See you at the " . $venueUseRow["USAGE"] . "!";
+				
 			}
-	
 		?>
 		</h2>
 		</form>
@@ -128,29 +147,29 @@ function printResult($result) { //prints results from a select statement
 
 }
 
-// Connect Oracle...
-if ($db_conn) {
-
-	if (array_key_exists('findName', $_POST)) {
-		if($_POST[firstName] == "" && $_POST[lastName] == "")
-			echo "<br>Please enter your first name, last name or the ID # on your invitation";
-		else{
-			$result = executePlainSQL("select gid, name from Guest where lower(name) like '%' || lower('". $_POST[firstName] ."') || '%' || lower('" . $_POST[lastName] . "') || '%'");
-			printResult($result);
-		}
-	} else
-		if (array_key_exists('findID', $_POST)) {
-		$result = executePlainSQL("select gid, name from Guest where gid = ". $_POST[id]);
-		printResult($result);
-		} 
-
-	//Commit to save changes...
-	OCILogoff($db_conn);
-} else {
-	echo "cannot connect";
-	$e = OCI_Error(); // For OCILogon errors pass no handle
-	echo htmlentities($e['message']);
-}
+// // Connect Oracle...
+// if ($db_conn) {
+// 
+	// if (array_key_exists('findName', $_POST)) {
+		// if($_POST[firstName] == "" && $_POST[lastName] == "")
+			// echo "<br>Please enter your first name, last name or the ID # on your invitation";
+		// else{
+			// $result = executePlainSQL("select gid, name from Guest where lower(name) like '%' || lower('". $_POST[firstName] ."') || '%' || lower('" . $_POST[lastName] . "') || '%'");
+			// printResult($result);
+		// }
+	// } else
+		// if (array_key_exists('findID', $_POST)) {
+		// $result = executePlainSQL("select gid, name from Guest where gid = ". $_POST[id]);
+		// printResult($result);
+		// } 
+// 
+	// //Commit to save changes...
+	// OCILogoff($db_conn);
+// } else {
+	// echo "cannot connect";
+	// $e = OCI_Error(); // For OCILogon errors pass no handle
+	// echo htmlentities($e['message']);
+// }
 
 /* OCILogon() allows you to log onto the Oracle database
      The three arguments are the username, password, and database

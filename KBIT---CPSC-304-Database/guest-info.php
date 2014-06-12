@@ -22,7 +22,7 @@
 			$allVenueCodes = executePlainSQL("select vID from Venue");
 			
 			while($allVenueCodesRows = OCI_Fetch_Array($allVenueCodes, OCI_BOTH)){//$allVenueCodesRows = OCI_Fetch_Array($allVenueCodes, OCI_BOTH) move this to outside as well to move others outside
-				
+				//change to use embedded arrays instead of OCI_Fetch_Array
 				$venueUse = executePlainSQL("select * from venue where vid = " . $allVenueCodesRows["VID"]);
 				$venueUseRow = OCI_Fetch_Array($venueUse, OCI_BOTH);	
 					
@@ -33,34 +33,37 @@
 						echo "<br>You have been invited to the " . $venueUseRow["USAGE"] . ".<br>";
 						echo "Will you be attending?<br>";
 						echo "<input type=\"radio\" name=\"response\" value=\"yes\">Yes  <input type=\"radio\" name=\"response\" value=\"no\">No";
-						if (array_key_exists('no', $_POST)) {
+						echo "<button type=\"submit\" class=\"btn btn-default\">Respond</button>";
+						if ($_POST['response'] == "no") {
 							executePlainSQL("update v_InvitedTo set vAccepted = 0 where gid = " . $_GET[id] . "and vid = " . $allVenueCodesRows["VID"]);
 							OCICommit($db_conn);
+							unset($_POST['response']);
 						}
-						else if (array_key_exists('yes', $_POST)) {
+						else if ($_POST['response'] == "yes") {
 							executePlainSQL("update v_InvitedTo set vAccepted = 1 where gid = " . $_GET[id] . "and vid = " . $allVenueCodesRows["VID"]);
 							OCICommit($db_conn);
+							unset($_POST['response']);
 						}
 						
 					}
 				
 					else if($acceptedRow["VACCEPTED"] == 0 && $acceptedRow["GID"] != NULL){
 						echo "<br><br>We're sorry you can't attend the " . $venueUseRow["USAGE"] . ".";
-						echo "<br><button type=\"submit\" class=\"btn btn-default\" name=\"changeToYes\" value=\"yes\">I can come now</button>";
-						if (isset($_POST['changeToYes'])) {
+						echo "<br><button type=\"submit\" class=\"btn btn-default\" name=\"response\" value=\"yes\">I can come now</button>";
+						if ($_POST['response'] == "yes") {
 							executePlainSQL("update v_InvitedTo set vAccepted = 1 where gid = " . $_GET[id] . "and vid = " . $allVenueCodesRows["VID"]);
 							OCICommit($db_conn);
-							unset($_POST['changeToYes']);
+							unset($_POST['response']);
 						}
 					}
 					else if($acceptedRow["VACCEPTED"] == 1 && $acceptedRow["GID"] != NULL){
 						echo "<br><br>See you at the " . $venueUseRow["USAGE"] . "!";
-						echo "<br><button type=\"submit\" class=\"btn btn-default\" name=\"changeToNo\" value=\"yes\">I can't come anymore</button>";
+						echo "<br><button type=\"submit\" class=\"btn btn-default\" name=\"response\" value=\"no\">I can't come anymore</button>";
 						
-						if (isset($_POST['changeToNo'])) {
+						if ($_POST['response'] == "no") {
 							executePlainSQL("update v_InvitedTo set vAccepted = 0 where gid = " . $_GET[id] . "and vid = " . $allVenueCodesRows["VID"]);
 							OCICommit($db_conn);
-							unset($_POST['changeToNo']);
+							unset($_POST['response']);
 						}
 						
 						if($acceptedRow["VID"] == 2){

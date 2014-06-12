@@ -19,69 +19,41 @@
 		</h1>
 		<h2>
 		<?php
-			$allVenueCodes = executePlainSQL("select vID from Venue");
+		if (array_key_exists('no', $_POST)) {
+			executePlainSQL("update v_InvitedTo set vAccepted = 0 where gid = " . $_GET[id] . "and vid = " . $_POST['no']);
+			OCICommit($db_conn);
+		}
+		else if (array_key_exists('yes', $_POST)) {
+			executePlainSQL("update v_InvitedTo set vAccepted = 1 where gid = " . $_GET[id] . "and vid = " . $_POST['yes']);
+			OCICommit($db_conn);
+		}
 			
+			$invitations = executePlainSQL("select i.gid, i.vid, i.vAccepted, v.usage from v_InvitedTo i, Venue v where gid = ". $_GET[id] . "and v.vid = i.vid");
 			
-			$initations = executePlainSQL("select gid, vid, vAccepted, usage from v_InvitedTo i, Venue v where gid = ". $_GET[id] . "and v.vid = i.vid");
-			
-			
-			
-			while($allVenueCodesRows = OCI_Fetch_Array($allVenueCodes, OCI_BOTH)){//$allVenueCodesRows = OCI_Fetch_Array($allVenueCodes, OCI_BOTH) move this to outside as well to move others outside
-				//change to use embedded arrays instead of OCI_Fetch_Array
-				$venueUse = executePlainSQL("select * from venue where vid = " . $allVenueCodesRows["VID"]);
-				$venueUseRow = OCI_Fetch_Array($venueUse, OCI_BOTH);	
-					
-				$accepted = executePlainSQL("select gid, vid, vAccepted from v_InvitedTo where gid = ". $_GET[id] . "and vid = " . $allVenueCodesRows["VID"]);
-				$acceptedRow = OCI_Fetch_Array($accepted, OCI_BOTH);
+			while($invitationsRow = oci_fetch_array($invitations)){//$allVenueCodesRows = OCI_Fetch_Array($allVenueCodes, OCI_BOTH) move this to outside as well to move others outside
 				
-					if($acceptedRow["VACCEPTED"] == NULL && $acceptedRow["GID"] != NULL){
-						echo "<br>You have been invited to the " . $venueUseRow["USAGE"] . ".<br>";
+					if($invitationsRow["VACCEPTED"] == NULL && $invitationsRow["GID"] != NULL){
+						echo "<br>You have been invited to the " . $invitationsRow["USAGE"] . ".<br>";
 						echo "Will you be attending?<br>";
-						echo "<input type=\"radio\" name=\"response\" value=\"yes\">Yes  <input type=\"radio\" name=\"response\" value=\"no\">No";
-						echo "<button type=\"submit\" class=\"btn btn-default\">Respond</button>";
-						if ($_POST['response'] == "no") {
-							executePlainSQL("update v_InvitedTo set vAccepted = 0 where gid = " . $_GET[id] . "and vid = " . $allVenueCodesRows["VID"]);
-							OCICommit($db_conn);
-							unset($_POST['response']);
-						}
-						else if ($_POST['response'] == "yes") {
-							executePlainSQL("update v_InvitedTo set vAccepted = 1 where gid = " . $_GET[id] . "and vid = " . $allVenueCodesRows["VID"]);
-							OCICommit($db_conn);
-							unset($_POST['response']);
-						}
-						
+						echo "<button type=\"submit\" class=\"btn btn-default\" name=\"yes\" value=". $invitationsRow["VID"] . ">Yes</button>";
+						echo "<button type=\"submit\" class=\"btn btn-default\" name=\"no\" value=" . $invitationsRow["VID"] . ">No</button>";
 					}
-				
-					else if($acceptedRow["VACCEPTED"] == 0 && $acceptedRow["GID"] != NULL){
-						echo "<br><br>We're sorry you can't attend the " . $venueUseRow["USAGE"] . ".";
-						echo "<br><button type=\"submit\" class=\"btn btn-default\" name=\"response\" value=\"yes\">I can come now</button>";
-						if ($_POST['response'] == "yes") {
-							executePlainSQL("update v_InvitedTo set vAccepted = 1 where gid = " . $_GET[id] . "and vid = " . $allVenueCodesRows["VID"]);
-							OCICommit($db_conn);
-							unset($_POST['response']);
-						}
+					else if($invitationsRow["VACCEPTED"] == 0 && $invitationsRow["GID"] != NULL){
+						echo "<br><br>We're sorry you can't attend the " . $invitationsRow["USAGE"]. ".";
+						echo "<br><button type=\"submit\" class=\"btn btn-default\" name=\"yes\" value=". $invitationsRow["VID"] .">I can come now</button>";
 					}
-					else if($acceptedRow["VACCEPTED"] == 1 && $acceptedRow["GID"] != NULL){
-						echo "<br><br>See you at the " . $venueUseRow["USAGE"] . "!";
-						echo "<br><button type=\"submit\" class=\"btn btn-default\" name=\"response\" value=\"no\">I can't come anymore</button>";
-						
-						if ($_POST['response'] == "no") {
-							executePlainSQL("update v_InvitedTo set vAccepted = 0 where gid = " . $_GET[id] . "and vid = " . $allVenueCodesRows["VID"]);
-							OCICommit($db_conn);
-							unset($_POST['response']);
-						}
-						
-						if($acceptedRow["VID"] == 2){
-						
-								$table = executePlainSQL("select tableno from v_InvitedTo where gid = ". $_GET[id] . "and vid = 2");
-								$tableRow = OCI_Fetch_Array($table, OCI_BOTH);	
-								echo "<br><br><br>You will be sitting at table # " . $tableRow["TABLENO"] . ".<br>";
-						
-							}	
+					else if($invitationsRow["VACCEPTED"] == 1 && $invitationsRow["GID"] != NULL){
+						echo "<br><br>See you at the " . $invitationsRow["USAGE"] . "!";
+						echo "<br><button type=\"submit\" class=\"btn btn-default\" name=\"no\" value=" . $invitationsRow["VID"] . ">I can't come anymore</button>";
+
+						if($invitationsRow["VID"] == 2){
+							$table = executePlainSQL("select tableno from v_InvitedTo where gid = ". $_GET[id] . "and vid = 2");
+							$tableRow = OCI_Fetch_Array($table, OCI_BOTH);	
+							echo "<br><br><br>You will be sitting at table # " . $tableRow["TABLENO"] . ".<br>";
+						}	
 					}
-									
 			}
-		
+
 		?>
 		</h2>
 		</form>
@@ -95,8 +67,6 @@
 		</table>
 		<?php
 
-//this tells the system that it's no longer just parsing 
-//html; it's now parsing PHP
 
 $success = True; //keep track of errors so it redirects the page only if there are no errors
 

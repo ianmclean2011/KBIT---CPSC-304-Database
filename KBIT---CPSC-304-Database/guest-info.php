@@ -21,6 +21,11 @@
 		<?php
 			$allVenueCodes = executePlainSQL("select vID from Venue");
 			
+			
+			$initations = executePlainSQL("select gid, vid, vAccepted, usage from v_InvitedTo i, Venue v where gid = ". $_GET[id] . "and v.vid = i.vid");
+			
+			
+			
 			while($allVenueCodesRows = OCI_Fetch_Array($allVenueCodes, OCI_BOTH)){//$allVenueCodesRows = OCI_Fetch_Array($allVenueCodes, OCI_BOTH) move this to outside as well to move others outside
 				//change to use embedded arrays instead of OCI_Fetch_Array
 				$venueUse = executePlainSQL("select * from venue where vid = " . $allVenueCodesRows["VID"]);

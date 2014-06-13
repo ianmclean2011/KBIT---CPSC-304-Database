@@ -55,16 +55,61 @@
 			}
 
 		?>
-		</h2>
+		</h2></form>
+		<?php
+		$dGuestCount = executePlainSQL("select count(*) from DependentGuest where gid = " . $_GET['id']);
+		$dGuestCountRow = OCI_Fetch_Array($dGuestCount);
+				
+		executePlainSQL("update Guest set numberBringing =" . $dGuestCountRow['COUNT(*)'] . "where gid = " . $_GET['id']);
+		OCICommit($db_conn);
+
+		$numGuests = executePlainSQL("select maxNumberAllowed, numberBringing from Guest where gid = " . $_GET['id']);
+		$numGuestsRow = OCI_Fetch_Array($numGuests);
+		
+		$maxAllowed = $numGuestsRow['MAXNUMBERALLOWED'];
+		//echo "<br>maxAllowed: " . $maxAllowed;
+		
+		$numBringing = (integer)$numGuestsRow['NUMBERBRINGING'];
+		//echo "<br>numBringing: " . $numBringing;
+		
+		if(array_key_exists('addGuest', $_POST) && $numBringing < $maxAllowed && $_POST['firstName'] != "" && $_POST['lastName']!= ""){
+			$numBringing++;
+			executePlainSQL("INSERT INTO DependentGuest VALUES (" . $_GET[id] . "," . $numBringing . ",'" . $_POST['firstName'] . " " . $_POST['lastName'] . "')");
+			executePlainSQL("update Guest set numberBringing =" . $dGuestCountRow['COUNT(*)'] . "where gid = " . $_GET['id']);
+			OCICommit($db_conn);
+		}
+		
+		else if(array_key_exists('addGuest', $_POST) && $numBringing < $maxAllowed && $_POST['firstName'] == "" || $_POST['lastName'] == "")
+			echo "<br>Please enter the first and last name of the guest you would like to bring";
+			
+		else if($numBringing >= $maxAllowed && array_key_exists('addGuest', $_POST)) 
+			echo "<br>Sorry you can't bring anymore guests.";
+		
+		if(array_key_exists('remove', $_POST)){
+			executePlainSQL("delete from  DependentGuest WHERE did=" . $_POST['remove'] . " and gid=" . $_GET['id']);
+			executePlainSQL("update Guest set numberBringing =" . $dGuestCountRow['COUNT(*)'] . "where gid = " . $_GET['id']);
+			OCICommit($db_conn);
+		}
+		
+		?>
+		<form class="form-inline" role="form" action="<?php $_SERVER['PHP_SELF']?>" method="post">
+			<input type="text" class="form-control" name="firstName" placeholder="First Name">
+			<input type="text" class="form-control" name="lastName" placeholder="Last Name">
+			<button type="submit" class="btn btn-default" name="addGuest" value="addGuest">Add Guest</button>
 		</form>
-		
-		
+		<form role="form" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 		<table class="table table-striped">
 			<tr>
-				<td>Bringing</td>
-				<td>Attending</td>
+				<th>My guests</th><th></th>
 			</tr>
-		</table>
+			<?php
+			$dGuests = executePlainSQL("select did, name from DependentGuest where gid = " . $_GET[id]);
+			while($dGuestsRow = OCI_Fetch_Array($dGuests, OCI_BOTH)){
+				echo "<tr><td>" . $dGuestsRow["NAME"] .  "</td><td>" . 
+				"<button type=\"submit\" class=\"btn btn-default\" name=\"remove\" value=" . $dGuestsRow["DID"] . ">Remove</button></td></tr>";
+			}
+			?>
+		</table></form>
 		<?php
 
 
@@ -77,18 +122,18 @@ function executePlainSQL($cmdstr) { //takes a plain (no bound variables) SQL com
 	$statement = OCIParse($db_conn, $cmdstr); //There is a set of comments at the end of the file that describe some of the OCI specific functions and how they work
 
 	if (!$statement) {
-		echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
-		$e = OCI_Error($db_conn); // For OCIParse errors pass the       
+		//echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
+		//$e = OCI_Error($db_conn); // For OCIParse errors pass the       
 		// connection handle
-		echo htmlentities($e['message']);
+		//echo htmlentities($e['message']);
 		$success = False;
 	}
 
 	$r = OCIExecute($statement, OCI_DEFAULT);
 	if (!$r) {
-		echo "<br>Please enter your first name, last name or the ID # on your invitation";
-		$e = oci_error($statement); // For OCIExecute errors pass the statementhandle
-		echo htmlentities($e['message']);
+		echo "<br>Please only use letters and numbers.";
+		//$e = oci_error($statement); // For OCIExecute errors pass the statementhandle
+		//echo htmlentities($e['message']);
 		$success = False;
 	} else {
 
@@ -108,9 +153,9 @@ function executeBoundSQL($cmdstr, $list) {
 	$statement = OCIParse($db_conn, $cmdstr);
 
 	if (!$statement) {
-		echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
-		$e = OCI_Error($db_conn);
-		echo htmlentities($e['message']);
+		//echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
+		//$e = OCI_Error($db_conn);
+		//echo htmlentities($e['message']);
 		$success = False;
 	}
 
@@ -124,10 +169,10 @@ function executeBoundSQL($cmdstr, $list) {
 		}
 		$r = OCIExecute($statement, OCI_DEFAULT);
 		if (!$r) {
-			echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
-			$e = OCI_Error($statement); // For OCIExecute errors pass the statementhandle
-			echo htmlentities($e['message']);
-			echo "<br>";
+			//echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
+			//$e = OCI_Error($statement); // For OCIExecute errors pass the statementhandle
+			//echo htmlentities($e['message']);
+			//echo "<br>";
 			$success = False;
 		}
 	}

@@ -22,7 +22,7 @@
 		<?php
 			$success = True; //keep track of errors so it redirects the page only if there are no errors
 			$db_conn = OCILogon("ora_p7m5", "a62141049", "ug");
-					
+			
 			function executePlainSQL($cmdstr) { //takes a plain (no bound variables) SQL command and executes it
 				//echo "<br>running ".$cmdstr."<br>";
 				global $db_conn, $success;
@@ -51,22 +51,48 @@
 			function printResult($result) { //prints results from a select statement
 				echo "<tr>
 						<th>Guest ID</th>
-						<th>Name</th>
-						<th># of Guests</th>
+						<th>Guest Name</th>
+						<th>Max # of Guests Allowed</th>
+						<th>Bringing # of Guests</th>
+						<th>Name of Dependent Guest(s)</th>
 					</tr>";
 				while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
 					echo "<tr>
 						<td>" . $row["GID"] . "</td>
-						<td>" . $row["NAME"] . "</td>
-						<td>" . $row["NUMBERBRINGING"] ."</td>
-					</tr>"; //or just use "echo $row[0]" 
+						<td>" . $row["NAME"] . "</td>";
+						
+						if ($row["MAXNUMBERALLOWED"] != null)
+						{
+							echo "<td>" . $row["MAXNUMBERALLOWED"] . "</td>";
+						}
+						else
+						{
+							echo "<td> 0 </td>";
+						}
+						
+						if ($row["NUMBERBRINGING"] != null || $row["NUMBERBRINGING"] >= 0)
+						{
+							echo "<td>" . $row["NUMBERBRINGING"] . "</td>";
+							
+							$dependentNames = executePlainSQL("SELECT name FROM DependentGuest D WHERE D.gID =" . $row["GID"]);
+							echo "<td>";
+							while ($dependentRow = OCI_Fetch_Array($dependentNames, OCI_BOTH))
+							{
+								echo $dependentRow["NAME"] . "<br>";
+							}
+							echo "</td>";
+						}
+						else
+						{
+							echo "<td> 0 </td>";
+						}
+					echo "</tr>";
 				}
 			}
-			
 			// Print result if database connection is successful
 			if ($db_conn) {
 					// Select data...
-			$result = executePlainSQL("select * from Guest");
+			$result = executePlainSQL("SELECT * FROM Guest");
 			printResult($result);
 			OCILogoff($db_conn);
 			} else {
@@ -76,6 +102,5 @@
 			}
 		?>
 		</table>
-
 	</body>
 </html>

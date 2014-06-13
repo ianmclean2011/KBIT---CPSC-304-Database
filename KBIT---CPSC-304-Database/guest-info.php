@@ -75,6 +75,10 @@
 		if(array_key_exists('addGuest', $_POST) && $numBringing < $maxAllowed && $_POST['firstName'] != "" && $_POST['lastName']!= ""){
 			$numBringing++;
 			executePlainSQL("INSERT INTO DependentGuest VALUES (" . $_GET[id] . "," . $numBringing . ",'" . $_POST['firstName'] . " " . $_POST['lastName'] . "')");
+			
+			$dGuestCount = executePlainSQL("select count(*) from DependentGuest where gid = " . $_GET['id']);
+			$dGuestCountRow = OCI_Fetch_Array($dGuestCount);
+			
 			executePlainSQL("update Guest set numberBringing =" . $dGuestCountRow['COUNT(*)'] . "where gid = " . $_GET['id']);
 			OCICommit($db_conn);
 		}
@@ -87,6 +91,10 @@
 		
 		if(array_key_exists('remove', $_POST)){
 			executePlainSQL("delete from  DependentGuest WHERE did=" . $_POST['remove'] . " and gid=" . $_GET['id']);
+			
+			$dGuestCount = executePlainSQL("select count(*) from DependentGuest where gid = " . $_GET['id']);
+			$dGuestCountRow = OCI_Fetch_Array($dGuestCount);
+			
 			executePlainSQL("update Guest set numberBringing =" . $dGuestCountRow['COUNT(*)'] . "where gid = " . $_GET['id']);
 			OCICommit($db_conn);
 		}

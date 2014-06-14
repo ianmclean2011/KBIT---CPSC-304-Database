@@ -18,7 +18,6 @@
 	</head>
 	<body>
 		<h1>Guestlist</h1>
-		<table class="table table-striped">
 		<?php
 			$success = True; //keep track of errors so it redirects the page only if there are no errors
 			$db_conn = OCILogon("ora_p7m5", "a62141049", "ug");
@@ -48,18 +47,25 @@
 				return $statement;
 			}
 
-			function printResult($result) { //prints results from a select statement
-				echo "<tr>
+			function printVenueGuestlist($venueID, $venueName) { //prints results from a select statement
+				echo "<table class='table table-striped'>
+					<caption><h3><u>" . $venueName . "</h3></u></caption>
+					<tr>
 						<th>Guest ID</th>
 						<th>Guest Name</th>
+						<th>Table #</th>
 						<th>Max # of Guests Allowed</th>
 						<th>Bringing # of Guests</th>
-						<th>Name of Dependent Guest(s)</th>
+						<th>Dependent Guests(s)</th>
 					</tr>";
+				
+				$result = executePlainSQL("SELECT * FROM Guest G, v_InvitedTo V WHERE G.gID = V.gID AND V.vID =" . $venueID);
+				
 				while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
 					echo "<tr>
 						<td>" . $row["GID"] . "</td>
-						<td>" . $row["NAME"] . "</td>";
+						<td>" . $row["NAME"] . "</td>
+						<td>" . $row["TABLENO"] . "</td>";
 						
 						if ($row["MAXNUMBERALLOWED"] != null)
 						{
@@ -92,8 +98,13 @@
 			// Print result if database connection is successful
 			if ($db_conn) {
 					// Select data...
-			$result = executePlainSQL("SELECT * FROM Guest");
-			printResult($result);
+			$venueResult = executePlainSQL("SELECT vID, vName FROM Venue");
+			
+			while ($venue = OCI_Fetch_Array($venueResult, OCI_BOTH))
+			{
+				printVenueGuestlist($venue["VID"], $venue["VNAME"]);
+			}
+			
 			OCILogoff($db_conn);
 			} else {
 				echo "cannot connect";

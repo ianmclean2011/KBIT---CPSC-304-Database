@@ -19,12 +19,10 @@
 	<body>
 		<h1>Guestlist</h1>
 		<?php
-			$success = True; //keep track of errors so it redirects the page only if there are no errors
 			$db_conn = OCILogon("ora_p7m5", "a62141049", "ug");
 			
 			function executePlainSQL($cmdstr) { //takes a plain (no bound variables) SQL command and executes it
-				//echo "<br>running ".$cmdstr."<br>";
-				global $db_conn, $success;
+				global $db_conn;
 				$statement = OCIParse($db_conn, $cmdstr); //There is a set of comments at the end of the file that describe some of the OCI specific functions and how they work
 
 				if (!$statement) {
@@ -32,22 +30,20 @@
 					$e = OCI_Error($db_conn); // For OCIParse errors pass the       
 					// connection handle
 					echo htmlentities($e['message']);
-					$success = False;
 				}
 
 				$r = OCIExecute($statement, OCI_DEFAULT);
 				if (!$r) {
 					echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
-					$e = oci_error($statement); // For OCIExecute errors pass the statementhandle
+					$e = oci_error($statement);
 					echo htmlentities($e['message']);
-					$success = False;
 				} else {
 
 				}
 				return $statement;
 			}
 
-			function printVenueGuestlist($venueID, $venueName) { //prints results from a select statement
+			function printGuestlistForVenue($venueID, $venueName) {
 				echo "<table class='table table-striped'>
 					<caption><h3><u>" . $venueName . "</h3></u></caption>
 					<tr>
@@ -93,25 +89,22 @@
 							echo "<td> 0 </td>";
 						}
 					echo "</tr>";
-				}
+				}				
+				echo "</table>";
 			}
 			// Print result if database connection is successful
-			if ($db_conn) {
-					// Select data...
-			$venueResult = executePlainSQL("SELECT vID, vName FROM Venue");
+			if ($db_conn){
+				$venueResult = executePlainSQL("SELECT vID, vName FROM Venue");
 			
-			while ($venue = OCI_Fetch_Array($venueResult, OCI_BOTH))
-			{
-				printVenueGuestlist($venue["VID"], $venue["VNAME"]);
-			}
-			
-			OCILogoff($db_conn);
+				while ($venue = OCI_Fetch_Array($venueResult, OCI_BOTH)){
+					printGuestlistForVenue($venue["VID"], $venue["VNAME"]);
+				}
+				OCILogoff($db_conn);
 			} else {
 				echo "cannot connect";
 				$e = OCI_Error(); // For OCILogon errors pass no handle
 				echo htmlentities($e['message']);
 			}
 		?>
-		</table>
 	</body>
 </html>

@@ -12,15 +12,15 @@ if ($_POST)
 	if (empty($_POST["firstName"]) || empty($_POST["lastName"]))
 		echo "<SCRIPT>alert('All fields must not be empty.');</SCRIPT>";
 	// Check for empty space in first/last name
-	if (preg_match('/\s/',$_POST["firstName"]) || preg_match('/\s/',$_POST["lastName"]))
+	else if (preg_match('/\s/',$_POST["firstName"]) || preg_match('/\s/',$_POST["lastName"]))
 		echo "<SCRIPT>alert('Your first/last name can\'t contain space.');</SCRIPT>";
 	// Check for non-alphabetic letter for first and last name;
-	if (!ctype_alpha($_POST["firstName"]) || !ctype_alpha($_POST["lastName"]))
+	else if (!ctype_alpha($_POST["firstName"]) || !ctype_alpha($_POST["lastName"]))
 		echo "<SCRIPT>alert('Your first/last name can\'t contain number/symbol.');</SCRIPT>";
 	// Check for non-digit letter for extraGuests;
-	if (!ctype_digit($_POST["extraGuests"]))
+	else if (!ctype_digit($_POST["extraGuests"]))
 		echo "<SCRIPT>alert('Please use digits for the number of extra guests entry.');</SCRIPT>";
-
+	
 	// Given proper input, insert the data into the Guest table
 	else 
 	{	// Creating random GID & Check that it is unique.

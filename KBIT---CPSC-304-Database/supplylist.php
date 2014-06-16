@@ -55,14 +55,17 @@
 						<th>Number Required</td>
 						<th>Price/Unit</th>
 						<th>Total Cost</th>
+						<th>Remove</th>
 					</tr>";
 				while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+					$id = $row["GID"];
 					echo "<tr>
 						<td>" . $row["COMPANYNAME"] . "</td>
 						<td>" . $row["ITEMNAME"] . "</td>
 						<td>" . $row["QUOTEDNUMBER"] ."</td>
 						<td>" . $row["UNITCOST"] ."</td>
 						<td>" . $row["TOTALCOST"] ."</td>
+						<td><a href='supplylistremove.php?id=$id'>Remove</td>
 					</tr>"; //or just use "echo $row[0]" 
 				}
 				

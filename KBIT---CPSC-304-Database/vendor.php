@@ -35,10 +35,10 @@
 					<div class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
 							<li>
-								<a href="guest.php?page=vendor-home">Home</a>
+								<a href="vendor.php?page=vendor-home">Home</a>
 							</li>
 							<li>
-								<a href="guest.php?page=add-quote">Add Quote</a>
+								<a href="vendor.php?page=add-quote">Add Quote</a>
 							</li>
 						</ul>
 					</div>

@@ -8,7 +8,7 @@
 		<form role="form" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 		<?php
 			$db_conn = OCILogon("ora_p7m5", "a62141049", "ug");
-			$name = executePlainSQL("select name, maxnumberallowed from Guest where gid = ". $_GET[id]);
+			$name = executePlainSQL("select name, maxnumberallowed from Guest where gid = '". $_GET[id] . "'");
 			$nameRow = OCI_Fetch_Array($name, OCI_BOTH);
 			echo $nameRow["NAME"];	
 			echo "<h2>You can bring up to " . 	$nameRow["MAXNUMBERALLOWED"];
@@ -20,15 +20,15 @@
 		<h2>
 		<?php
 		if (array_key_exists('no', $_POST)) {
-			executePlainSQL("update v_InvitedTo set vAccepted = 0 where gid = " . $_GET[id] . "and vid = " . $_POST['no']);
+			executePlainSQL("update v_InvitedTo set vAccepted = 0 where gid = '" . $_GET[id] . "' and vid = " . $_POST['no']);
 			OCICommit($db_conn);
 		}
 		else if (array_key_exists('yes', $_POST)) {
-			executePlainSQL("update v_InvitedTo set vAccepted = 1 where gid = " . $_GET[id] . "and vid = " . $_POST['yes']);
+			executePlainSQL("update v_InvitedTo set vAccepted = 1 where gid = '" . $_GET[id] . "' and vid = '" . $_POST['yes'] .  "'");
 			OCICommit($db_conn);
 		}
 			
-			$invitations = executePlainSQL("select i.gid, i.vid, i.vAccepted, v.usage from v_InvitedTo i, Venue v where gid = ". $_GET[id] . "and v.vid = i.vid");
+			$invitations = executePlainSQL("select i.gid, i.vid, i.vAccepted, v.usage from v_InvitedTo i, Venue v where gid = '". $_GET[id] . "' and v.vid = i.vid");
 			
 			while($invitationsRow = oci_fetch_array($invitations)){//$allVenueCodesRows = OCI_Fetch_Array($allVenueCodes, OCI_BOTH) move this to outside as well to move others outside
 				
@@ -47,7 +47,7 @@
 						echo "<br><button type=\"submit\" class=\"btn btn-default\" name=\"no\" value=" . $invitationsRow["VID"] . ">I can't come anymore</button>";
 
 						if($invitationsRow["VID"] == 2){
-							$table = executePlainSQL("select tableno from v_InvitedTo where gid = ". $_GET[id] . "and vid = 2");
+							$table = executePlainSQL("select tableno from v_InvitedTo where gid = '". $_GET[id] . "' and vid = 2");
 							$tableRow = OCI_Fetch_Array($table, OCI_BOTH);	
 							echo "<br><br><br>You will be sitting at table # " . $tableRow["TABLENO"] . ".<br>";
 						}	
@@ -57,13 +57,13 @@
 		?>
 		</h2></form>
 		<?php
-		$dGuestCount = executePlainSQL("select count(*) from DependentGuest where gid = " . $_GET['id']);
+		$dGuestCount = executePlainSQL("select count(*) from DependentGuest where gid = '" . $_GET['id'] . "'");
 		$dGuestCountRow = OCI_Fetch_Array($dGuestCount);
 				
-		executePlainSQL("update Guest set numberBringing =" . $dGuestCountRow['COUNT(*)'] . "where gid = " . $_GET['id']);
+		executePlainSQL("update Guest set numberBringing =" . $dGuestCountRow['COUNT(*)'] . "where gid = '" . $_GET['id'] . "'");
 		OCICommit($db_conn);
 
-		$numGuests = executePlainSQL("select maxNumberAllowed, numberBringing from Guest where gid = " . $_GET['id']);
+		$numGuests = executePlainSQL("select maxNumberAllowed, numberBringing from Guest where gid = '" . $_GET['id'] . "'");
 		$numGuestsRow = OCI_Fetch_Array($numGuests);
 		
 		$maxAllowed = $numGuestsRow['MAXNUMBERALLOWED'];
@@ -74,12 +74,12 @@
 		
 		if(array_key_exists('addGuest', $_POST) && $numBringing < $maxAllowed && $_POST['firstName'] != "" && $_POST['lastName']!= ""){
 			$numBringing++;
-			executePlainSQL("INSERT INTO DependentGuest VALUES (" . $_GET[id] . "," . $numBringing . ",'" . $_POST['firstName'] . " " . $_POST['lastName'] . "')");
+			executePlainSQL("INSERT INTO DependentGuest VALUES ('" . $_GET[id] . "'," . $numBringing . ",'" . $_POST['firstName'] . " " . $_POST['lastName'] . "')");
 			
 			$dGuestCount = executePlainSQL("select count(*) from DependentGuest where gid = " . $_GET['id']);
 			$dGuestCountRow = OCI_Fetch_Array($dGuestCount);
 			
-			executePlainSQL("update Guest set numberBringing =" . $dGuestCountRow['COUNT(*)'] . "where gid = " . $_GET['id']);
+			executePlainSQL("update Guest set numberBringing =" . $dGuestCountRow['COUNT(*)'] . "where gid = '" . $_GET['id'] . "'");
 			OCICommit($db_conn);
 		}
 		
@@ -90,12 +90,12 @@
 			echo "<br>Sorry you can't bring anymore guests.";
 		
 		if(array_key_exists('remove', $_POST)){
-			executePlainSQL("delete from  DependentGuest WHERE did=" . $_POST['remove'] . " and gid=" . $_GET['id']);
+			executePlainSQL("delete from  DependentGuest WHERE did=" . $_POST['remove'] . " and gid='" . $_GET['id'] . "'");
 			
 			$dGuestCount = executePlainSQL("select count(*) from DependentGuest where gid = " . $_GET['id']);
 			$dGuestCountRow = OCI_Fetch_Array($dGuestCount);
 			
-			executePlainSQL("update Guest set numberBringing =" . $dGuestCountRow['COUNT(*)'] . "where gid = " . $_GET['id']);
+			executePlainSQL("update Guest set numberBringing =" . $dGuestCountRow['COUNT(*)'] . "where gid = '" . $_GET['id'] . "'");
 			OCICommit($db_conn);
 		}
 		
@@ -111,10 +111,10 @@
 				<th>My guests</th><th></th>
 			</tr>
 			<?php
-			$dGuests = executePlainSQL("select did, name from DependentGuest where gid = " . $_GET[id]);
+			$dGuests = executePlainSQL("select did, name from DependentGuest where gid = '" . $_GET[id] . "'");
 			while($dGuestsRow = OCI_Fetch_Array($dGuests, OCI_BOTH)){
 				echo "<tr><td>" . $dGuestsRow["NAME"] .  "</td><td>" . 
-				"<button type=\"submit\" class=\"btn btn-default\" name=\"remove\" value=" . $dGuestsRow["DID"] . ">Remove</button></td></tr>";
+				"<button type=\"submit\" class=\"btn btn-link\" name=\"remove\" value=" . $dGuestsRow["DID"] . ">Remove</button></td></tr>";
 			}
 			?>
 		</table></form>

@@ -3,21 +3,50 @@
 include 'idGen.php';
 include 'connect.php';
 include 'sqlFunction.php';
+include 'checkDuplicateGID.php';
 
-
-if (empty($_POST["firstName"]) || empty($_POST["lastName"]) || empty($_POST["extraGuests"]) || empty($_POST["email"]) || empty($_POST["emailRe"]))
-	echo "<SCRIPT>alert('All fields must not be empty.');</SCRIPT>";
-else 
+// Only when data is entered and submitted
+if ($_POST)
 {
-	$cmdstr = "INSERT INTO Guest (GID, name, maxnumberallowed, numberBringing) VALUES ('".
-	idGen()."', '".
-	$_POST["firstName"]." ".$_POST["lastName"]."', ".
-	"0, ".
-	$_POST["extraGuests"].")";
-	echo "Guest added successfully<br><br>command executed : ".$cmdstr;
+	// Check for empty field
+	if (empty($_POST["firstName"]) || empty($_POST["lastName"]))
+		echo "<SCRIPT>alert('All fields must not be empty.');</SCRIPT>";
+	// Check for empty space in first/last name
+	else if (preg_match('/\s/',$_POST["firstName"]) || preg_match('/\s/',$_POST["lastName"]))
+		echo "<SCRIPT>alert('Your first/last name can\'t contain space.');</SCRIPT>";
+	// Check for non-alphabetic letter for first and last name;
+	else if (!ctype_alpha($_POST["firstName"]) || !ctype_alpha($_POST["lastName"]))
+		echo "<SCRIPT>alert('Your first/last name can\'t contain number/symbol.');</SCRIPT>";
+	// Check for non-digit letter for extraGuests;
+	else if (!ctype_digit($_POST["extraGuests"]))
+		echo "<SCRIPT>alert('Please use digits for the number of extra guests entry.');</SCRIPT>";
+	
+	// Given proper input, insert the data into the Guest table
+	else 
+	{	// Creating random GID & Check that it is unique.
+		Do 	{
+		  $guestID = idGen();
+		} while (checkDuplicateGID($guestID));
 
-	executePlainSQL($cmdstr);
-	OCICommit($db_conn);
+		// Creating Insertion SQL query
+		$cmdstr = "INSERT INTO Guest (GID, name, maxnumberallowed, numberBringing) VALUES ('"
+		.$guestID."', '".
+		$_POST["firstName"]." ".$_POST["lastName"]."', ".
+		$_POST["extraGuests"].", 0)";
+
+		// Executing the query
+		executePlainSQL($cmdstr);
+		OCICommit($db_conn);
+
+		// Display Insertion summary
+		echo "<h2>The guest is added successfully. </h2><br>";
+		echo "<h3> Name : ".$_POST["firstName"]." ".$_POST["lastName"]."<br>";
+		echo "Number of extra guests allowed : ".$_POST["extraGuests"]."<br>";
+		echo "Guest ID : <b>".$guestID."</b></h3><br>";
+		echo "<h3>Please inform the guest to use this ID for the access.</h3><br>";
+
+
+	}
 }
 
 
@@ -43,6 +72,7 @@ else
 			<label for="extraGuests">Number of extra guests</label>
 			<input type="number" class="form-control" name="extraGuests" placeholder="#" size="2">
 		</div>
+		<!--
 		<div class="form-group">
 			<label for="email">Email</label>
 			<input type="email" class="form-control" name="email" placeholder="Email">
@@ -51,6 +81,7 @@ else
 			<label for="emailRe">Re-Type Email</label>
 			<input type="email" class="form-control" name="emailRe" placeholder="Re-Type Email">
 		</div>
+		-->
 		<button type="submit" class="btn btn-default">
 			Add
 		</button>			

@@ -55,7 +55,7 @@
 						<th>Dependent Guests(s)</th>
 					</tr>";
 				
-				$result = executePlainSQL("SELECT * FROM Guest G, v_InvitedTo V WHERE G.gID = V.gID AND V.vID =" . $venueID);
+				$result = executePlainSQL("SELECT * FROM Guest G, v_InvitedTo V WHERE G.gID = V.gID AND V.vID ='" . $venueID . "'");
 				
 				while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
 					echo "<tr>

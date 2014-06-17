@@ -25,12 +25,12 @@ if ($_POST)
 	else 
 	{	// Creating random GID & Check that it is unique.
 		Do 	{
-			$guestID = idGen();
+		  $guestID = idGen();
 		} while (checkDuplicateGID($guestID));
 
 		// Creating Insertion SQL query
-		$cmdstr = "INSERT INTO Guest (GID, name, maxnumberallowed, numberBringing) VALUES ('".
-		$guestID."', '".
+		$cmdstr = "INSERT INTO Guest (GID, name, maxnumberallowed, numberBringing) VALUES ('"
+		.$guestID."', '".
 		$_POST["firstName"]." ".$_POST["lastName"]."', ".
 		$_POST["extraGuests"].", 0)";
 

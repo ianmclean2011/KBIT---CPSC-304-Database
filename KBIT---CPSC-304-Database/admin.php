@@ -44,6 +44,9 @@
 										<a href="admin.php?page=add-guest">Add Guest</a>
 									</li>
 									<li>
+										<a href="admin.php?page=mod-del-guest">Modify Guest</a>
+									</li>
+									<li>
 										<a href="admin.php?page=tables">Tables</a>
 									</li>
 								</ul>

@@ -28,8 +28,7 @@
 		if(in_array("capacity", $_POST['columns']))
 			$columnSelect .= ", vCapacity";
 
-		$venueInfo = executePlainSQL("select " . $columnSelect . " from Venue");
-		
+				
 		if(array_key_exists('remove', $_POST)){
 			executePlainSQL("delete from Venue where vid='" . $_POST['remove'] . "'");
 			OCICommit($db_conn);
@@ -46,7 +45,7 @@
 				else echo "<th></th>";
 				
 				echo "<td>Remove</td></tr>";
-
+			$venueInfo = executePlainSQL("select " . $columnSelect . " from Venue");
 			while($venueInfoRow = OCI_Fetch_Array($venueInfo, OCI_BOTH)){
 				echo "<tr>";
 				

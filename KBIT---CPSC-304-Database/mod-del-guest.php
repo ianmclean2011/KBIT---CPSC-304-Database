@@ -2,28 +2,16 @@
 include 'connect.php';
 include 'sqlFunction.php';
 
-// Delete Tuple of guest with specific GID
-if($_REQUEST["deleteGID"])
-  {
-  	echo "<h2>The guest is deleted successfully. </h2><br>";
-	echo "<h3> gID : ".$_REQUEST['deleteGID'];
-
-     $cmdstr = "DELETE FROM Guest WHERE gID = '".$_REQUEST['deleteGID']."'";
-     executePlainSQL($cmdstr);
-	 OCICommit($db_conn);
-     exit();
-
-  }
-
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
 <script src="js/jquery-1.11.1.min.js"></script>
+
 </head>
 <body>
-
+<h1>Delete/Modify Guest</h1><br>
 <table width=100%>
 	<tr>
 		<th width=3%> 
@@ -46,8 +34,49 @@ if($_REQUEST["deleteGID"])
 	</tr>
 
 <?php
+// Delete Tuple of guest with specific GID
+if($_REQUEST["deleteGuest"])
+{
+  	echo "<h2>The guest is deleted successfully. </h2><br>";
+
+     $cmdstr = "DELETE FROM Guest WHERE gID = '".$_REQUEST['deleteGuest']."'";
+     executePlainSQL($cmdstr);
+	 OCICommit($db_conn);
+}
+
+else if($_REQUEST["changeGuest"])
+{
+	if (is_null($_REQUEST['newName']))
+	$newName = $_REQUEST['oldName'];
+	else $newName = $_REQUEST['newName'];
+
+	if (is_null($_REQUEST['newMax']))
+	$newMax = $_REQUEST['oldMax'];
+	else $newMax = $_REQUEST['newMax'];
+
+	// Check for non-alphabetic letter for first and last name;
+	if (ctype_digit($newName))
+		echo "<SCRIPT>alert('Your first/last name can\'t contain number/symbol.');</SCRIPT>";
+	// Check for non-digit letter for extraGuests;
+	else if (!ctype_digit($newMax))
+		echo "<SCRIPT>alert('Please use digits for the number of extra guests entry.');</SCRIPT>";
+	else 
+	{
+     $cmdstr = "UPDATE Guest SET name='".$newName."', maxNumberAllowed=".$newMax. " WHERE gID = '".$_REQUEST['changeGuest']."'";
+     executePlainSQL($cmdstr);
+	 OCICommit($db_conn);
+
+	 echo "<h2>The guest info is updated. </h2><br>";
+	}
+}
+
+
+
 $result = executePlainSQL("SELECT * FROM Guest");
 $oddRow=true; // For table alternating color
+$color1 = '#ffffff';
+$color2 = '#dddddd';
+$colorTemp;
 // Prints the guests
 while ($row = OCI_Fetch_Array($result, OCI_NUM)) 
 {
@@ -55,35 +84,53 @@ while ($row = OCI_Fetch_Array($result, OCI_NUM))
 	$name = $row[1];
 	$maxDG = $row[2];
 	$numDG = $row[3];
-	if ($oddRow) echo "<tr bgcolor=#ffffff>"; else echo "<tr bgcolor=#dddddd>"; // A simple alternating background color stuff
-	echo "<td>";
 
+	echo "<tr bgcolor=".$color1." id='".$gID."'>"; // A simple alternating background color stuff
+	echo "<td>";
 	// Link for deleting a tuple with specific GID
-	$tempDelStr = "<td><input name=delGuest".$row[0]."type='image' width='20' height='20' src=\"image/delete.png\" onclick=\"deleteGuest('".$row[0];
-	$tempDelStr = sprintf("%8.100s",$tempDelStr)."')\"></input>";
 	echo "<form action=\"".$_PHP_SELF. "\" method=\"POST\">";
-	echo "<input type=\"hidden\" name=\"deleteGID\" value=\"".$gID."\">";
+	echo "<input type=\"hidden\" name=\"deleteGuest\" value=\"".$gID."\">";
 	echo "<input type=image src=\"image\delete.png\" type=\"submit\" width=20 height=20 alt=\"Submit Form\" ></form>";
 	echo "</td>";
 	// Rest of the info about the guest
 	echo "<td>".$gID."</td>";
-	echo "<td>".$name."</td>";
+	echo "<td>".$name;"</td>";
 	echo "<td>".$maxDG."</td>";
 	echo "<td>".$numDG."</td>";
 	echo "<td>";
 
-	// This part prints all the extra guests
-	$depCmdStr = "SELECT name FROM DependentGuest WHERE gID = '".$gID;
-	$depCmdStr = sprintf("%8.51s",$depCmdStr)."'"; 
+	// This part prints all the dependent guests
+	$depCmdStr = "SELECT name FROM DependentGuest WHERE gID = '".$gID."'";
+	//$depCmdStr = sprintf("%8.51s",$depCmdStr)."'"; 
 	$nestedResult = executePlainSQL($depCmdStr);
 	while ($row2 = OCI_Fetch_Array($nestedResult, OCI_NUM))
 	{
 		echo $row2[0]."<br>";
 	}
-
 	echo "</td>";
 	echo "</tr>";
-	$oddRow = !$oddRow;
+
+		//This row contains form for editing
+	echo "<tr bgcolor=".$color1." id='edit".$gID."'>";
+	echo "<td></td>";
+	echo "<td></td>";
+	echo "<td><form action=\"".$_PHP_SELF. "\" method=\"POST\">";
+	echo "<input type=\"text\" name=\"newName\" >";
+	echo "<input type=\"hidden\" name=\"oldName\" value=\"".$name."\">";
+	echo "</td>";
+	echo "<td><input type=\"text\" name =\"newMax\" >";
+	echo "<input type=\"hidden\" name=\"oldMax\" value=".$maxDG.">";
+	echo "</td>";
+	echo "<td><input type=\"hidden\" name=\"changeGuest\" value=\"".$gID."\"></td>";
+	echo "<td align=right><button type=\"submit\">Update</td></form>";
+	echo "</tr>";
+	// hides edit form initially.
+	//echo "<script>$(document).ready(function(){";
+	//echo "$(\"#edit".$gID."\").hide();";
+	//echo "});</script>";
+	$colorTemp = $color2;
+	$color2 = $color1;
+	$color1 = $colorTemp;
 }
 ?>
 

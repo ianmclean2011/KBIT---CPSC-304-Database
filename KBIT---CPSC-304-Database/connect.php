@@ -1,8 +1,8 @@
 <?php
-echo "SQL status : ";
-$db_conn = OCILogon("ora_p7m5", "a62141049", "ug");
+//echo "SQL status : ";
+$db_conn = OCILogon("ora_a7t8", "a23518095", "ug");
 if ($db_conn) {
-  echo "Successfully connected to Oracle.\n";
+  //echo "Successfully connected to Oracle.\n";
 } else {
   $err = OCIError();
   echo "Oracle Connect Error " . $err['message'];

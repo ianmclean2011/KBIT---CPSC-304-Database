@@ -1,0 +1,355 @@
+DROP TABLE SupplyUsedFor;
+DROP TABLE SupplyProvided;
+DROP TABLE SupplyQuoted;
+DROP TABLE v_InvitedTo;
+DROP TABLE Venue;
+DROP TABLE Vendor;
+DROP TABLE DependentGuest;
+DROP TABLE Guest;
+
+
+CREATE TABLE Guest (
+ gID VARCHAR2(10),
+ name VARCHAR2(30),
+ password VARCHAR2(10),
+ maxNumberAllowed INTEGER,
+ numberBringing INTEGER,
+ PRIMARY KEY (gID));
+
+CREATE TABLE DependentGuest(
+ gID VARCHAR2(10),
+ dID VARCHAR2(10),
+ name VARCHAR2(30),
+ PRIMARY KEY (dID, gID),
+ FOREIGN KEY (gID) REFERENCES Guest
+ ON DELETE CASCADE);
+
+CREATE TABLE Vendor(
+ gID VARCHAR2(10),
+ companyName VARCHAR2(30),
+ PRIMARY KEY (gID, companyName),
+ FOREIGN KEY (gID) REFERENCES Guest);
+
+CREATE TABLE Venue(
+ vID VARCHAR2(6),
+ vCapacity INTEGER,
+ usage VARCHAR2(20),
+ vName VARCHAR2(100),
+ vAddress VARCHAR2(1000),
+ PRIMARY KEY (vID));
+
+CREATE TABLE v_InvitedTo(
+ gID VARCHAR2(10),
+ vID VARCHAR2(6),
+ vAccepted INTEGER,
+ tableNo INTEGER,
+ numSeats INTEGER,
+ PRIMARY KEY (gID, vID),
+ FOREIGN KEY (gID) REFERENCES Guest,
+ FOREIGN KEY (vID) REFERENCES Venue);
+
+CREATE TABLE SupplyQuoted(
+ gID VARCHAR2(10),
+ companyName VARCHAR2(30),
+ itemName VARCHAR2(30),
+ quotedNumber INTEGER,
+ totalCost NUMBER(38,2),
+ unitCost NUMBER(38,2),
+ PRIMARY KEY (gID, companyName, itemName),
+ FOREIGN KEY (gID) REFERENCES Guest,
+ FOREIGN KEY (gID, companyName) REFERENCES Vendor);
+
+CREATE TABLE SupplyProvided(
+ gID VARCHAR2(10),
+ companyName VARCHAR2(30),
+ itemName VARCHAR2(30),
+ providedNumber INTEGER,
+ PRIMARY KEY (gID, companyName, itemName),
+ FOREIGN KEY (gID) REFERENCES Guest,
+ FOREIGN KEY (gID, companyName) REFERENCES Vendor);
+
+CREATE TABLE SupplyUsedFor(
+ vID VARCHAR2(6),
+ gID VARCHAR2(10),
+ companyName VARCHAR2(30),
+ itemName VARCHAR2(30),
+ qty INTEGER,
+ PRIMARY KEY (vID, gID, companyName, itemName),
+ FOREIGN KEY (vID) REFERENCES Venue,
+ FOREIGN KEY (gID, companyName, itemName) REFERENCES SupplyProvided);
+
+INSERT INTO Guest VALUES (1,'Amy Liu',NULL,0,0);
+INSERT INTO Guest VALUES (2,'Ben Nguyen',NULL,0,0);
+INSERT INTO Guest VALUES (3,'Sheryl Leung',NULL,1,1);
+INSERT INTO Guest VALUES (4,'Alex Mak',NULL,2,0);
+INSERT INTO Guest VALUES (5,'Cynthia Huang',NULL,1,1);
+INSERT INTO Guest VALUES (6,'Tommy Chan',NULL,0,0);
+INSERT INTO Guest VALUES (7,'Silvia Huang',NULL,2,0);
+INSERT INTO Guest VALUES (8,'George Paderes',NULL,1,0);
+INSERT INTO Guest VALUES (9,'Racquel Paderes',NULL,3,1);
+INSERT INTO Guest VALUES (10,'Eric Wong',NULL,2,1);
+INSERT INTO Guest VALUES (11,'Jennifer Tung',NULL,0,0);
+INSERT INTO Guest VALUES (12,'Jeff Shinoki',NULL,1,0);
+INSERT INTO Guest VALUES (13,'Mathew Wong',NULL,2,0);
+INSERT INTO Guest VALUES (14,'Dominic Voo',NULL,3,0);
+INSERT INTO Guest VALUES (15,'Tiana Lam',NULL,1,0);
+INSERT INTO Guest VALUES (16,'Vanessa Shiu',NULL,2,0);
+INSERT INTO Guest VALUES (17,'Lucas Ng',NULL,1,0);
+INSERT INTO Guest VALUES (18,'Alfa Wong',NULL,2,1);
+INSERT INTO Guest VALUES (19,'Thespena Kanakos',NULL,3,1);
+INSERT INTO Guest VALUES (20,'Sandeep Pooni',NULL,2,0);
+INSERT INTO Guest VALUES (21,'Chalaine Soon',NULL,1,0);
+INSERT INTO Guest VALUES (22,'Jay Chow',NULL,0,0);
+INSERT INTO Guest VALUES (23,'Christine Huang',NULL,1,0);
+INSERT INTO Guest VALUES (24,'Cathy Der',NULL,1,0);
+INSERT INTO Guest VALUES (25,'Michelle Lee',NULL,2,0);
+INSERT INTO Guest VALUES (26,'Allan Phan',NULL,0,0);
+INSERT INTO Guest VALUES (27,'Elaine Chan',NULL,1,1);
+INSERT INTO Guest VALUES (28,'Brady Fox',NULL,1,0);
+INSERT INTO Guest VALUES (29,'Donna Nasu',NULL,2,0);
+INSERT INTO Guest VALUES (30,'Doug Booth',NULL,0,0);
+INSERT INTO Guest VALUES (31,'Jenny Chiu',NULL,2,1);
+INSERT INTO Guest VALUES (32,'Ben Gagnier',NULL,0,0);
+INSERT INTO Guest VALUES (33,'Marianne Lowe',NULL,1,0);
+INSERT INTO Guest VALUES (34,'Jeff Lowe',NULL,2,0);
+INSERT INTO Guest VALUES (35,'Raj Kalsi',NULL,0,0);
+INSERT INTO Guest VALUES (36,'Gurdip Sagoo',NULL,1,0);
+INSERT INTO Guest VALUES (37,'Lynsey Hamilton',NULL,3,0);
+INSERT INTO Guest VALUES (38,'Ian Allison',NULL,0,0);
+INSERT INTO Guest VALUES (39,'Kitty Liu',NULL,1,0);
+INSERT INTO Guest VALUES (40,'TJ Lum',NULL,0,0);
+INSERT INTO Guest VALUES (41,'Jasmine Yip',NULL,2,1);
+INSERT INTO Guest VALUES (42,'Adam Plywaczewski',NULL,0,0);
+INSERT INTO Guest VALUES (43,'Jules Hui',NULL,2,0);
+INSERT INTO Guest VALUES (44,'Lena Chow',NULL,0,0);
+INSERT INTO Guest VALUES (45,'Sunny Chan',NULL,0,0);
+INSERT INTO Guest VALUES (46,'Alan Do',NULL,3,1);
+INSERT INTO Guest VALUES (47,'Lily Yip',NULL,1,0);
+INSERT INTO Guest VALUES (48,'Alan Do GF',NULL,1,0);
+INSERT INTO Guest VALUES (49,'Katherine Chan',NULL,3,0);
+INSERT INTO Guest VALUES (50,'Jun Sison',NULL,1,0);
+INSERT INTO Guest VALUES (51,'Steven Chin',NULL,2,0);
+INSERT INTO Guest VALUES (52,'Melissa Filiatrault',NULL,2,0);
+INSERT INTO Guest VALUES (53,'Anh Hoang',NULL,0,0);
+INSERT INTO Guest VALUES (54,'Mike Mah',NULL,1,0);
+INSERT INTO Guest VALUES (55,'Clarice Kwok',NULL,1,0);
+INSERT INTO Guest VALUES (56,'Tim Kwan',NULL,2,0);
+INSERT INTO Guest VALUES (57,'Leo Fu',NULL,0,0);
+INSERT INTO Guest VALUES (58,'Jimmy Huynh',NULL,1,0);
+INSERT INTO Guest VALUES (59,'Lawrence Chow',NULL,3,1);
+INSERT INTO Guest VALUES (60,'Lana Lin',NULL,1,0);
+INSERT INTO Guest VALUES (61,'Chris Bom',NULL,1,0);
+INSERT INTO Guest VALUES (62,'Lesley Soril',NULL,2,1);
+INSERT INTO Guest VALUES (63,'Jason Plemel',NULL,0,0);
+INSERT INTO Guest VALUES (64,'Kevin Gao',NULL,1,0);
+INSERT INTO Guest VALUES (65,'Rose Lau',NULL,2,0);
+INSERT INTO Guest VALUES (66,'Raymond Chen',NULL,0,0);
+INSERT INTO Guest VALUES (67,'Edmond Ng',NULL,1,0);
+INSERT INTO Guest VALUES (68,'Anita Ma',NULL,2,1);
+INSERT INTO Guest VALUES (69,'Derek Ng',NULL,0,0);
+INSERT INTO Guest VALUES (70,'Melinda Medina',NULL,1,0);
+INSERT INTO Guest VALUES (71,'Conan Weeks',NULL,0,0);
+INSERT INTO Guest VALUES (72,'Nick Chau',NULL,5,0);
+INSERT INTO Guest VALUES (73,'Sarah Nickerson',NULL,0,0);
+INSERT INTO Guest VALUES (74,'Hugh Izumi',NULL,0,0);
+INSERT INTO Guest VALUES (75,'Johanna McFarland',NULL,0,0);
+INSERT INTO Guest VALUES (76,'Kyle Seo',NULL,0,0);
+INSERT INTO Guest VALUES (77,'May Showers',NULL,0,0);
+INSERT INTO Guest VALUES (78,'Tim Soril',NULL,0,0);
+INSERT INTO DependentGuest VALUES (1,3,'Leo Leung');
+INSERT INTO DependentGuest VALUES (2,9,'Little Paderes');
+INSERT INTO DependentGuest VALUES (3,10,'Kevin Wong');
+INSERT INTO DependentGuest VALUES (4,18,'Momo Wong');
+INSERT INTO DependentGuest VALUES (5,19,'Akis Kanakos');
+INSERT INTO DependentGuest VALUES (6,27,'Mandy Chan');
+INSERT INTO DependentGuest VALUES (7,31,'Chops Chiu');
+INSERT INTO DependentGuest VALUES (8,41,'Jon OBrian');
+INSERT INTO DependentGuest VALUES (9,46,'Linda Vo');
+INSERT INTO DependentGuest VALUES (10,59,'Vanessa Dang');
+INSERT INTO DependentGuest VALUES (11,62,'Wolf Tetzlaff');
+INSERT INTO DependentGuest VALUES (12,68,'Derek Lai');
+
+INSERT INTO Vendor VALUES (72,'SoWedding'); 
+INSERT INTO Vendor VALUES (73,'The Nickersons'); 
+INSERT INTO Vendor VALUES (74,'Riverway Clubhouse'); 
+INSERT INTO Vendor VALUES (75,'AB Rentals'); 
+INSERT INTO Vendor VALUES (76,'Vancouver Limo'); 
+INSERT INTO Vendor VALUES (77,'Sunflower Florist'); 
+INSERT INTO Vendor VALUES (78,'DJ SoReal'); 
+
+INSERT INTO Venue VALUES (1,150,'Ceremony','Blusson Spinal Cord Centre','818 West 10th Avenue, Vancouver, BC');
+INSERT INTO Venue VALUES (2,220,'Reception','Riverway Clubhouse','9001 Bill Fox Way, Burnaby, BC');
+
+INSERT INTO v_InvitedTo VALUES (1,1,1,1,NULL); 
+INSERT INTO v_InvitedTo VALUES (2,1,1,1,NULL); 
+INSERT INTO v_InvitedTo VALUES (3,1,0,1,NULL); 
+INSERT INTO v_InvitedTo VALUES (4,1,1,1,NULL); 
+INSERT INTO v_InvitedTo VALUES (5,1,0,1,NULL); 
+INSERT INTO v_InvitedTo VALUES (6,1,1,1,NULL); 
+INSERT INTO v_InvitedTo VALUES (7,1,0,1,NULL); 
+INSERT INTO v_InvitedTo VALUES (8,1,1,1,NULL); 
+INSERT INTO v_InvitedTo VALUES (9,1,0,1,NULL); 
+INSERT INTO v_InvitedTo VALUES (10,1,1,1,NULL); 
+INSERT INTO v_InvitedTo VALUES (11,1,0,2,NULL); 
+INSERT INTO v_InvitedTo VALUES (12,1,1,2,NULL); 
+INSERT INTO v_InvitedTo VALUES (13,1,0,2,NULL); 
+INSERT INTO v_InvitedTo VALUES (14,1,1,2,NULL); 
+INSERT INTO v_InvitedTo VALUES (15,1,1,2,NULL); 
+INSERT INTO v_InvitedTo VALUES (16,1,1,2,NULL); 
+INSERT INTO v_InvitedTo VALUES (17,1,1,2,NULL); 
+INSERT INTO v_InvitedTo VALUES (18,1,1,2,NULL); 
+INSERT INTO v_InvitedTo VALUES (19,1,1,2,NULL); 
+INSERT INTO v_InvitedTo VALUES (20,1,1,2,NULL); 
+INSERT INTO v_InvitedTo VALUES (21,1,1,3,NULL); 
+INSERT INTO v_InvitedTo VALUES (22,1,0,3,NULL); 
+INSERT INTO v_InvitedTo VALUES (23,1,1,3,NULL); 
+INSERT INTO v_InvitedTo VALUES (24,1,1,3,NULL); 
+INSERT INTO v_InvitedTo VALUES (25,1,1,3,NULL); 
+INSERT INTO v_InvitedTo VALUES (26,1,1,3,NULL); 
+INSERT INTO v_InvitedTo VALUES (27,1,1,3,NULL); 
+INSERT INTO v_InvitedTo VALUES (28,1,1,3,NULL); 
+INSERT INTO v_InvitedTo VALUES (29,1,1,3,NULL); 
+INSERT INTO v_InvitedTo VALUES (30,1,1,3,NULL); 
+INSERT INTO v_InvitedTo VALUES (31,1,0,4,NULL); 
+INSERT INTO v_InvitedTo VALUES (32,1,0,4,NULL); 
+INSERT INTO v_InvitedTo VALUES (33,1,0,4,NULL); 
+INSERT INTO v_InvitedTo VALUES (34,1,1,4,NULL); 
+INSERT INTO v_InvitedTo VALUES (35,1,0,4,NULL); 
+INSERT INTO v_InvitedTo VALUES (36,1,1,4,NULL); 
+INSERT INTO v_InvitedTo VALUES (37,1,1,4,NULL); 
+INSERT INTO v_InvitedTo VALUES (38,1,1,4,NULL); 
+INSERT INTO v_InvitedTo VALUES (39,1,0,4,NULL); 
+INSERT INTO v_InvitedTo VALUES (40,1,0,4,NULL); 
+INSERT INTO v_InvitedTo VALUES (41,1,1,5,NULL); 
+INSERT INTO v_InvitedTo VALUES (42,1,1,5,NULL); 
+INSERT INTO v_InvitedTo VALUES (43,1,1,5,NULL); 
+INSERT INTO v_InvitedTo VALUES (44,1,0,5,NULL); 
+INSERT INTO v_InvitedTo VALUES (45,1,0,5,NULL); 
+INSERT INTO v_InvitedTo VALUES (46,1,1,5,NULL); 
+INSERT INTO v_InvitedTo VALUES (47,1,1,5,NULL); 
+INSERT INTO v_InvitedTo VALUES (48,1,1,5,NULL); 
+INSERT INTO v_InvitedTo VALUES (49,1,1,5,NULL); 
+INSERT INTO v_InvitedTo VALUES (50,1,0,5,NULL); 
+INSERT INTO v_InvitedTo VALUES (51,1,0,6,NULL); 
+INSERT INTO v_InvitedTo VALUES (52,1,1,6,NULL); 
+INSERT INTO v_InvitedTo VALUES (53,1,1,6,NULL); 
+INSERT INTO v_InvitedTo VALUES (54,1,1,6,NULL); 
+INSERT INTO v_InvitedTo VALUES (55,1,1,6,NULL); 
+INSERT INTO v_InvitedTo VALUES (56,1,0,6,NULL); 
+INSERT INTO v_InvitedTo VALUES (57,1,1,6,NULL); 
+INSERT INTO v_InvitedTo VALUES (58,1,1,6,NULL); 
+INSERT INTO v_InvitedTo VALUES (59,1,1,6,NULL); 
+INSERT INTO v_InvitedTo VALUES (60,1,1,6,NULL); 
+INSERT INTO v_InvitedTo VALUES (61,1,1,7,NULL); 
+INSERT INTO v_InvitedTo VALUES (62,1,1,7,NULL); 
+INSERT INTO v_InvitedTo VALUES (63,1,1,7,NULL); 
+INSERT INTO v_InvitedTo VALUES (64,1,1,7,NULL); 
+INSERT INTO v_InvitedTo VALUES (65,1,1,7,NULL); 
+INSERT INTO v_InvitedTo VALUES (66,1,0,7,NULL); 
+INSERT INTO v_InvitedTo VALUES (67,1,0,7,NULL); 
+INSERT INTO v_InvitedTo VALUES (68,1,1,7,NULL); 
+INSERT INTO v_InvitedTo VALUES (69,1,0,7,NULL); 
+INSERT INTO v_InvitedTo VALUES (70,1,0,7,NULL); 
+INSERT INTO v_InvitedTo VALUES (71,1,1,8,NULL); 
+INSERT INTO v_InvitedTo VALUES (72,1,0,8,NULL); 
+INSERT INTO v_InvitedTo VALUES (1,2,0,8,NULL); 
+INSERT INTO v_InvitedTo VALUES (2,2,1,8,NULL); 
+INSERT INTO v_InvitedTo VALUES (3,2,0,8,NULL); 
+INSERT INTO v_InvitedTo VALUES (4,2,1,8,NULL); 
+INSERT INTO v_InvitedTo VALUES (5,2,0,8,NULL); 
+INSERT INTO v_InvitedTo VALUES (6,2,1,8,NULL); 
+INSERT INTO v_InvitedTo VALUES (7,2,1,8,NULL); 
+INSERT INTO v_InvitedTo VALUES (8,2,1,8,NULL); 
+INSERT INTO v_InvitedTo VALUES (9,2,1,9,NULL); 
+INSERT INTO v_InvitedTo VALUES (10,2,1,9,NULL); 
+INSERT INTO v_InvitedTo VALUES (11,2,0,9,NULL); 
+INSERT INTO v_InvitedTo VALUES (12,2,1,9,NULL); 
+INSERT INTO v_InvitedTo VALUES (13,2,0,9,NULL); 
+INSERT INTO v_InvitedTo VALUES (14,2,0,9,NULL); 
+INSERT INTO v_InvitedTo VALUES (15,2,1,9,NULL); 
+INSERT INTO v_InvitedTo VALUES (16,2,0,9,NULL); 
+INSERT INTO v_InvitedTo VALUES (17,2,0,9,NULL); 
+INSERT INTO v_InvitedTo VALUES (18,2,1,9,NULL); 
+INSERT INTO v_InvitedTo VALUES (19,2,1,10,NULL); 
+INSERT INTO v_InvitedTo VALUES (20,2,1,10,NULL); 
+INSERT INTO v_InvitedTo VALUES (21,2,0,10,NULL); 
+INSERT INTO v_InvitedTo VALUES (22,2,0,10,NULL); 
+INSERT INTO v_InvitedTo VALUES (23,2,1,10,NULL); 
+INSERT INTO v_InvitedTo VALUES (24,2,1,10,NULL); 
+INSERT INTO v_InvitedTo VALUES (25,2,1,10,NULL); 
+INSERT INTO v_InvitedTo VALUES (26,2,0,10,NULL); 
+INSERT INTO v_InvitedTo VALUES (27,2,0,10,NULL); 
+INSERT INTO v_InvitedTo VALUES (28,2,0,10,NULL); 
+INSERT INTO v_InvitedTo VALUES (29,2,1,11,NULL); 
+INSERT INTO v_InvitedTo VALUES (30,2,1,11,NULL); 
+INSERT INTO v_InvitedTo VALUES (31,2,1,11,NULL); 
+INSERT INTO v_InvitedTo VALUES (32,2,0,11,NULL); 
+INSERT INTO v_InvitedTo VALUES (33,2,1,11,NULL); 
+INSERT INTO v_InvitedTo VALUES (34,2,0,11,NULL); 
+INSERT INTO v_InvitedTo VALUES (35,2,0,11,NULL); 
+INSERT INTO v_InvitedTo VALUES (36,2,1,11,NULL); 
+INSERT INTO v_InvitedTo VALUES (37,2,1,11,NULL); 
+INSERT INTO v_InvitedTo VALUES (38,2,1,11,NULL); 
+INSERT INTO v_InvitedTo VALUES (39,2,1,12,NULL); 
+INSERT INTO v_InvitedTo VALUES (40,2,0,12,NULL); 
+INSERT INTO v_InvitedTo VALUES (41,2,1,12,NULL); 
+INSERT INTO v_InvitedTo VALUES (42,2,1,12,NULL); 
+INSERT INTO v_InvitedTo VALUES (43,2,0,12,NULL); 
+INSERT INTO v_InvitedTo VALUES (44,2,1,12,NULL); 
+INSERT INTO v_InvitedTo VALUES (45,2,0,12,NULL); 
+INSERT INTO v_InvitedTo VALUES (46,2,1,12,NULL); 
+INSERT INTO v_InvitedTo VALUES (47,2,1,12,NULL); 
+INSERT INTO v_InvitedTo VALUES (48,2,0,12,NULL); 
+INSERT INTO v_InvitedTo VALUES (49,2,1,13,NULL); 
+INSERT INTO v_InvitedTo VALUES (50,2,1,13,NULL); 
+INSERT INTO v_InvitedTo VALUES (51,2,0,13,NULL); 
+INSERT INTO v_InvitedTo VALUES (52,2,1,13,NULL); 
+INSERT INTO v_InvitedTo VALUES (53,2,0,13,NULL); 
+INSERT INTO v_InvitedTo VALUES (54,2,1,13,NULL); 
+INSERT INTO v_InvitedTo VALUES (55,2,1,13,NULL); 
+INSERT INTO v_InvitedTo VALUES (56,2,0,13,NULL); 
+INSERT INTO v_InvitedTo VALUES (57,2,1,13,NULL); 
+INSERT INTO v_InvitedTo VALUES (58,2,0,13,NULL); 
+INSERT INTO v_InvitedTo VALUES (59,2,0,14,NULL); 
+INSERT INTO v_InvitedTo VALUES (60,2,1,14,NULL); 
+INSERT INTO v_InvitedTo VALUES (61,2,0,14,NULL); 
+INSERT INTO v_InvitedTo VALUES (62,2,1,14,NULL); 
+INSERT INTO v_InvitedTo VALUES (63,2,1,14,NULL); 
+INSERT INTO v_InvitedTo VALUES (64,2,0,14,NULL); 
+INSERT INTO v_InvitedTo VALUES (65,2,1,14,NULL); 
+INSERT INTO v_InvitedTo VALUES (66,2,0,14,NULL); 
+INSERT INTO v_InvitedTo VALUES (67,2,0,14,NULL); 
+INSERT INTO v_InvitedTo VALUES (68,2,1,14,NULL); 
+INSERT INTO v_InvitedTo VALUES (69,2,NULL,15,NULL); 
+INSERT INTO v_InvitedTo VALUES (70,2,NULL,15,NULL); 
+INSERT INTO v_InvitedTo VALUES (71,2,NULL,15,NULL); 
+INSERT INTO v_InvitedTo VALUES (72,2,NULL,15,NULL); 
+INSERT INTO v_InvitedTo VALUES (78,2,NULL,15,NULL); 
+
+INSERT INTO SupplyQuoted VALUES (72,'SoWedding','Photography',1,3000,3000);
+INSERT INTO SupplyQuoted VALUES (73,'The Nickersons','Photography',1,8000,8000);
+INSERT INTO SupplyQuoted VALUES (74,'Riverway Clubhouse','Catering',150,14700,98);
+INSERT INTO SupplyQuoted VALUES (75,'AB Rentals','Chairs',150,487.5,3.25);
+INSERT INTO SupplyQuoted VALUES (76,'Vancouver Limo','Limosine Service',13,1170,90);
+INSERT INTO SupplyQuoted VALUES (77,'Sunflower Florist','Red Roses',200,250,1.25);
+INSERT INTO SupplyQuoted VALUES (78,'DJ SoReal','DJ Service',8,800,100);
+INSERT INTO SupplyQuoted VALUES (77,'Sunflower Florist','Tulips',200,200,1);
+INSERT INTO SupplyQuoted VALUES (75,'AB Rentals','Table Runners',150,600,4);
+INSERT INTO SupplyQuoted VALUES (72,'SoWedding','Videography',1,3000,3000);
+INSERT INTO SupplyQuoted VALUES (77,'Sunflower Florist','White Roses',200,200,1);
+
+INSERT INTO SupplyProvided VALUES (72,'SoWedding','Photography',1);
+INSERT INTO SupplyProvided VALUES (74,'Riverway Clubhouse','Catering',185);
+INSERT INTO SupplyProvided VALUES (75,'AB Rentals','Chairs',150);
+INSERT INTO SupplyProvided VALUES (76,'Vancouver Limo','Limosine Service',13);
+INSERT INTO SupplyProvided VALUES (78,'DJ SoReal','DJ Service',10);
+INSERT INTO SupplyProvided VALUES (72,'SoWedding','Videography',1);
+
+INSERT INTO SupplyUsedFor VALUES (1,72,'SoWedding','Photography',1);
+INSERT INTO SupplyUsedFor VALUES (2,74,'Riverway Clubhouse','Catering',185);
+INSERT INTO SupplyUsedFor VALUES (1,75,'AB Rentals','Chairs',150);
+INSERT INTO SupplyUsedFor VALUES (1,76,'Vancouver Limo','Limosine Service',13);
+INSERT INTO SupplyUsedFor VALUES (2,78,'DJ SoReal','DJ Service',10);
+INSERT INTO SupplyUsedFor VALUES (1,72,'SoWedding','Videography',1);
+
+COMMIT;

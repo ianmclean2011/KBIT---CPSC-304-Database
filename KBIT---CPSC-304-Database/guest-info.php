@@ -114,7 +114,7 @@
 			$dGuests = executePlainSQL("select did, name from DependentGuest where gid = '" . $_GET[id] . "'");
 			while($dGuestsRow = OCI_Fetch_Array($dGuests, OCI_BOTH)){
 				echo "<tr><td>" . $dGuestsRow["NAME"] .  "</td><td>" . 
-				"<button type=\"submit\" class=\"btn btn-default\" name=\"remove\" value=" . $dGuestsRow["DID"] . ">Remove</button></td></tr>";
+				"<button type=\"submit\" class=\"btn btn-link\" name=\"remove\" value=" . $dGuestsRow["DID"] . ">Remove</button></td></tr>";
 			}
 			?>
 		</table></form>

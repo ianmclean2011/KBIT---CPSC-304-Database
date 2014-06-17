@@ -1,3 +1,4 @@
+<html>
 <?php
  
  //$id = $_GET['id'];
@@ -17,3 +18,4 @@
 
 	//header('location:supplylist.php');
 ?>
+</html>

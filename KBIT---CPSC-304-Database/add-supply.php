@@ -97,6 +97,7 @@ if (array_key_exists('addsupply', $_POST)) { //If the click addSupply button
 						oci_execute($newSupply);
 						
 						echo "It worked";
+						OCICommit($db_conn);
 					}					
 				   //$vendExist = 1;
     			   //echo $compID;
@@ -105,6 +106,7 @@ if (array_key_exists('addsupply', $_POST)) { //If the click addSupply button
 				if ($vendExist == 5){
 					echo "The Vendor you have chosen does not exist. Please choose a Vendor that exists, or please update the Vendor list.";
 				}
+			OCILogoff($db_conn);	
 			}
 			
 			/*Getting the values from user and insert data into the table

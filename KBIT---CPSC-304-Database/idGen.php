@@ -12,15 +12,14 @@
 
 	@param $personType - 1 for Guests and 2 for Vendors.
 	@param $personCount - number of people already in the database for that person type.
-	@return an unique nine digit id number
+	@return a nine digit id number.
 	 */
 	function idGen($personType, $personCount)
 	{
 		// First digit of ID identifies whether the person is a guest or vendor.
 		$first = $personType;
 		
-		// Second to Sixth is determined by personCount. 
-		// Therefore, if person count is greater than 5 digits, then all available unique IDS have been assigned.
+		// Second to sixth is determined by personCount. 
 		if(strlen($personCount) > 5)
 		{
 			return null;
@@ -29,22 +28,13 @@
 		{
 			$secondToEight = str_pad($personCount, 5, "0", STR_PAD_LEFT);
 			
-			// Seven and eighth digit is randomized.
+			// Seven to eighth digit is randomized.
 			$random= strval(rand(10,99));
 			$secondToEight = $secondToEight.$random;
 		}
 
-		// Calculate the ninth check digit which can be used to check the integrity of the ID entered at a later time.
-		$second = array_sum(str_split(strval(intVal($secondToEight{0}) * 2)));
-		$third = intVal($secondToEight{1});
-		$fourth =  array_sum(str_split(strval(intVal($secondToEight{2}) * 2)));
-		$fifth = intVal($secondToEight{3});
-		$sixth =  array_sum(str_split(strval(intVal($secondToEight{4}) * 2)));
-		$seventh = intVal($secondToEight{5});
-		$eighth =  array_sum(str_split(strval(intVal($secondToEight{6}) * 2)));
+		$ninth = calculateCheckDigit("$first"."$secondToEight");
 		
-		$ninth = 10 - (($first + $second + $third + $fourth + $fifth + $sixth + $seventh + $eighth) % 10);
-			
 		return "$first".$secondToEight."$ninth";
 	}
 	
@@ -60,9 +50,37 @@
 		{
 			return false;
 		}
-		else
+
+		if ($id[8] == calculateCheckDigit($id))
 		{
 			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function calculateCheckDigit($id)
+	{
+		$first = intVal($id{0});
+		$second = array_sum(str_split(strval(intVal($id{1}) * 2)));
+		$third = intVal($id{2});
+		$fourth =  array_sum(str_split(strval(intVal($id{3}) * 2)));
+		$fifth = intVal($id{4});
+		$sixth =  array_sum(str_split(strval(intVal($id{5}) * 2)));
+		$seventh = intVal($id{6});
+		$eighth =  array_sum(str_split(strval(intVal($id{7}) * 2)));
+		
+		$ninth = 10 - (($first + $second + $third + $fourth + $fifth + $sixth + $seventh + $eighth) % 10);
+		
+		if ($ninth == 10)
+		{
+			return 0;
+		}
+		else
+		{
+			return $ninth;
 		}
 	}
 ?>

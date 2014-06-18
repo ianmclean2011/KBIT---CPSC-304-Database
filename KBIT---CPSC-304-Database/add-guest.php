@@ -24,12 +24,13 @@ if ($_POST)
 	// Given proper input, insert the data into the Guest table
 	else 
 	{	// Creating a unique GID & check that it is unique.
+		$cmdstr = "SELECT COUNT(*) FROM Guest";
+		$guestCountResult = executePlainSQL($cmdstr);
+		$guestCount = oci_fetch_array($guestCountResult, OCI_BOTH);
+		$guestSeed = intval($guestCount["COUNT(*)"]);
+		$guestType = 1; // 1 for guests, 2 for vendors
 		Do{
-			$cmdstr = "SELECT COUNT(*) FROM Guest";
-			$guestCountResult = executePlainSQL($cmdstr);
-			$guestCount = oci_fetch_array($guestCountResult, OCI_BOTH);
-			$guestType = 1; // 1 for guests, 2 for vendors
-			$guestID = idGen($guestType, $guestCount["COUNT(*)"]);
+			$guestID = idGen($guestType, $guestSeed++); // Tries to find an unused ID
 		} while (checkDuplicateGID($guestID));
 
 		//If guestID is null, then all assignable unique IDs have been used. Do not proceed.
@@ -54,10 +55,9 @@ if ($_POST)
 			echo "Guest ID : <b>".$guestID."</b></h3><br>";
 			echo "<h3>Please inform the guest to use this ID for the access.</h3><br>";
 		}
+		
 	}
 }
-
-
 
 ?>
 

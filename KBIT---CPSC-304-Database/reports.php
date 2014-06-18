@@ -25,22 +25,6 @@ include 'sqlFunction.php';
   		});
 	});
 	$(document).ready(function(){
-		$("#2-1m").hide()
-	});
-	$(document).ready(function(){
-  		$("#2-1").click(function(){
-    		$("#2-1m").toggle();
-  		});
-	});
-	$(document).ready(function(){
-		$("#2-2m").hide()
-	});
-	$(document).ready(function(){
-  		$("#2-2").click(function(){
-    		$("#2-2m").toggle();
-  		});
-	});
-	$(document).ready(function(){
 		$("#3-1m").hide()
 	});
 	$(document).ready(function(){
@@ -66,13 +50,6 @@ include 'sqlFunction.php';
 			<button id="1-2"> Sort by Lowest Cost</button></td></tr>
 			<tr><td><?php include 'report-cost-highest.php' ?></td></tr>
 			<tr><td><?php include 'report-cost-lowest.php' ?></td></tr></table>
-	<hr>
-	<h2 id='2'>Supply Cost For Each Venue</h2><br>
-		<table width=1000><tr><td width= width=1000>
-			<button id="2-1"> Items/Cost for Each Venue</button>
-			<button id="2-2"> Total Cost for Each Venue</button></td></tr>
-			<tr><td><?php include 'report-cost-venue.php' ?></td></tr></table>
-
 	<hr>
 	<h2 id='3'>Supply Cost For Each Vendor</h2><br>
 		<table width=1000><tr><td width= width=1000>

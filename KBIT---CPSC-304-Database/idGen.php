@@ -28,7 +28,7 @@
 		{
 			$secondToEight = str_pad($personCount, 5, "0", STR_PAD_LEFT);
 			
-			// Seven to eighth digit is randomized.
+			// Seventh to eighth digit is randomized.
 			$random= strval(rand(10,99));
 			$secondToEight = $secondToEight.$random;
 		}

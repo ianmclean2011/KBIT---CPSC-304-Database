@@ -37,7 +37,7 @@ CREATE TABLE Venue(
 
 CREATE TABLE v_InvitedTo(
  gID VARCHAR2(10),
- vID VARCHAR2(6),
+ vID VARCHAR2(10),
  vAccepted INTEGER,
  tableNo INTEGER,
  numSeats INTEGER,

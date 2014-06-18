@@ -45,7 +45,7 @@
 						
 			//function printGuestlistForVenue($venueID, $venueName) {
 				echo "<table class='table table-striped'>
-					<caption><h3><u>Gueusts Invited to All Venues</h3></u></caption>
+					<caption><h3><u>Guests Invited to All Venues</h3></u></caption>
 					<tr>
 						<th>Guest ID</th>
 						<th>Guest Name</th>

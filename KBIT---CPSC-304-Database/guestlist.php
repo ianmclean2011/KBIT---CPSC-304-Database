@@ -42,12 +42,16 @@
 				}
 				return $statement;
 			}
-			$venueCount = executePlainSQL("select vName as Name, count from venue v, (select vid, count(*) as count from v_invitedTo group by vid) i where v.vid = i.vid");
+			$venueCount = executePlainSQL("select vName as Name, (count + dcount) as total 
+											from venue v, 
+												(select vid, count(*) as count, sum(dcount) as dcount from v_invitedto v left join 
+													(select gid as dgid, count(*) as dCount from dependentguest d group by gid) on v.gid = dgid where v.vAccepted = 1 group by vid) i 
+														where v.vid = i.vid");
 			
 			echo "<table class='table table-striped'><tr><th>Venue Name</th><th>Count</th></tr>";
 			
 			while($venueCountRow = OCI_Fetch_Array($venueCount, OCI_BOTH)){
-				echo "<tr><td>" . $venueCountRow['NAME'] . "</td><td>" . $venueCountRow['COUNT'] . "</td></tr>";
+				echo "<tr><td>" . $venueCountRow['NAME'] . "</td><td>" . $venueCountRow['TOTAL'] . "</td></tr>";
 			}
 						
 			echo "</table>";

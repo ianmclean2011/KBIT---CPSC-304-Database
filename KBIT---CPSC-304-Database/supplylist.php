@@ -90,8 +90,9 @@
 			$deleteItem=oci_parse($db_conn,"delete from  SupplyQuoted WHERE gid='" . $removeGid."' and itemname='" . $removeItemName."'");
 			oci_execute($deleteItem);
 			
-			OCICommit($db_conn);
+			
 		}
+			OCICommit($db_conn);
 			//$deleteQuery= OCI_PARSE($db_conn,"DELETE FROM SupplyQuoted WHERE gID = '$id'");
 	  		//OCI_EXECUTE($deleteQuery);
 			OCILogoff($db_conn);

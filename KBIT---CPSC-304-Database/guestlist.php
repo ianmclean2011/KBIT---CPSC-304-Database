@@ -47,13 +47,10 @@
 			echo "<table class='table table-striped'><tr><th>Venue Name</th><th>Count</th></tr>";
 			
 			while($venueCountRow = OCI_Fetch_Array($venueCount, OCI_BOTH)){
-				echo "<tr><td>" . $venueCountRow['NAME'] . "</td><td>" . $venueCountRow['COUNT'] . "</td><tr>";
+				echo "<tr><td>" . $venueCountRow['NAME'] . "</td><td>" . $venueCountRow['COUNT'] . "</td></tr>";
 			}
 						
 			echo "</table>";
-			
-			
-			
 			
 			function printGuestlistForVenue($venueID, $venueName) {
 				echo "<table class='table table-striped'>

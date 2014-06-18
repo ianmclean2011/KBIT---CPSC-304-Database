@@ -1,3 +1,10 @@
+<?php 
+include 'idGen.php';
+include 'connect.php';
+include 'sqlFunction.php';
+include 'checkDuplicateGID.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -20,14 +27,6 @@
 		<div class="form-group">
 			<label for="extraGuests">Number of extra guests</label>
 			<input type="number" class="form-control" name="extraGuests" placeholder="#" size="2">
-		</div>
-		<div class="form-group">
-			<label for="password">New Password</label>
-			<input type="password" class="form-control" name="password" placeholder="Password">
-		</div>
-		<div class="form-group">
-			<label for="passwordRetype">Re-Type Password</label>
-			<input type="password" class="form-control" name="passwordRe" placeholder="Re-Type Password">
 		</div>
 		<button type="submit" class="btn btn-default">
 			Add

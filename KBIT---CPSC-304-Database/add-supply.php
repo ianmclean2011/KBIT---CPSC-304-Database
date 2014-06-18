@@ -70,7 +70,7 @@ if (array_key_exists('addsupply', $_POST)) { //If the click addSupply button
 				
 				$compID = oci_result($pgID, 'GID');
 				//vendor ID entered by user
-				$compID2 = $_POST[company]. "        ";
+				$compID2 = $_POST[company];
 			
 				//Checks to see if the vendor ID entered matches one of a pre-existing vendor
 				if($compID2 == $compID){

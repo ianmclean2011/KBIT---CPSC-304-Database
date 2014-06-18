@@ -18,7 +18,17 @@
 	</head>
 	<body>
 		<h1>Supply List</h1>
-		<table class="table table-striped">
+		<form role="form" action="<?php $_SERVER['PHP_SELF']?>" method="post">
+					<table class="table table-striped">
+					<tr>
+						<th>Vendor</th>
+						<th>Name</th>
+						<th>Number Required</td>
+						<th>Price/Unit</th>
+						<th>Total Cost</th>
+						<th>Remove</th>
+					</tr>
+					
 		<?php
 			$success = True; //keep track of errors so it redirects the page only if there are no errors
 			$db_conn = OCILogon("ora_p7m5", "a62141049", "ug");
@@ -49,24 +59,17 @@
 			}
 
 			function printResult($result) { //prints results from a select statement
-				echo "<tr>
-						<th>Vendor</th>
-						<th>Name</th>
-						<th>Number Required</td>
-						<th>Price/Unit</th>
-						<th>Total Cost</th>
-						<th>Remove</th>
-					</tr>";
-				while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-					$id = $row["GID"];
+				
+			
+			while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
 					echo "<tr>
 						<td>" . $row["COMPANYNAME"] . "</td>
 						<td>" . $row["ITEMNAME"] . "</td>
 						<td>" . $row["QUOTEDNUMBER"] ."</td>
 						<td>" . $row["UNITCOST"] ."</td>
 						<td>" . $row["TOTALCOST"] ."</td>
-						<td><a href='supplylistremove.php?id=$id'>Remove</td>
-					</tr>"; //or just use "echo $row[0]" 
+						<td>"."<button type=\"submit\" class=\"btn btn-link\" name=\"remove\" value=" . $row["GID"] ."|".$row["ITEMNAME"].">Remove</button></td>
+					</tr>"; 
 				}
 				
 			}
@@ -76,6 +79,21 @@
 					// Select data...
 			$result = executePlainSQL("select * from SupplyQuoted");
 			printResult($result);
+			
+			if(array_key_exists('remove', $_POST)){
+			echo $_POST['remove'];
+			$separateValue = explode("|",$_POST['remove']);
+			$removeGid = $separateValue[0];
+			$removeItemName=$separateValue[1];
+			
+		
+			$deleteItem=oci_parse($db_conn,"delete from  SupplyQuoted WHERE gid='" . $removeGid."' and itemname='" . $removeItemName."'");
+			oci_execute($deleteItem);
+			
+			OCICommit($db_conn);
+		}
+			//$deleteQuery= OCI_PARSE($db_conn,"DELETE FROM SupplyQuoted WHERE gID = '$id'");
+	  		//OCI_EXECUTE($deleteQuery);
 			OCILogoff($db_conn);
 			} else {
 				echo "cannot connect";
@@ -83,7 +101,8 @@
 				echo htmlentities($e['message']);
 			}
 		?>
-		</table>
+		</table></form>
+		
 
 	</body>
 </html>

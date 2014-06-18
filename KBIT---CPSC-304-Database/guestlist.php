@@ -7,7 +7,7 @@
 		<title>Team K-BIT - Wedding Planner</title>
 
 		<!-- Bootstrap -->
-		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/bootstrap.css" rel="stylesheet">
 
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -42,7 +42,19 @@
 				}
 				return $statement;
 			}
-
+			$venueCount = executePlainSQL("select vName as Name, count from venue v, (select vid, count(*) as count from v_invitedTo group by vid) i where v.vid = i.vid");
+			
+			echo "<table class='table table-striped'><tr><th>Venue Name</th><th>Count</th></tr>";
+			
+			while($venueCountRow = OCI_Fetch_Array($venueCount, OCI_BOTH)){
+				echo "<tr><td>" . $venueCountRow['NAME'] . "</td><td>" . $venueCountRow['COUNT'] . "</td><tr>";
+			}
+						
+			echo "</table>";
+			
+			
+			
+			
 			function printGuestlistForVenue($venueID, $venueName) {
 				echo "<table class='table table-striped'>
 					<caption><h3><u>" . $venueName . "</h3></u></caption>

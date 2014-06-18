@@ -80,16 +80,6 @@ if ($_POST)
 			<label for="extraGuests">Number of extra guests</label>
 			<input type="number" class="form-control" name="extraGuests" placeholder="#" size="2">
 		</div>
-		<!--
-		<div class="form-group">
-			<label for="email">Email</label>
-			<input type="email" class="form-control" name="email" placeholder="Email">
-		</div>
-		<div class="form-group">
-			<label for="emailRe">Re-Type Email</label>
-			<input type="email" class="form-control" name="emailRe" placeholder="Re-Type Email">
-		</div>
-		-->
 		<button type="submit" class="btn btn-default">
 			Add
 		</button>			

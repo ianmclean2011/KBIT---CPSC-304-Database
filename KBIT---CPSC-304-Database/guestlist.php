@@ -62,20 +62,30 @@
 					<tr>
 						<th>Guest ID</th>
 						<th>Guest Name</th>
+						<th>Accepted</th>
 						<th>Table #</th>
 						<th>Max # of Guests Allowed</th>
 						<th>Bringing # of Guests</th>
 						<th>Dependent Guests(s)</th>
 					</tr>";
 				
-				$result = executePlainSQL("SELECT * FROM Guest G, v_InvitedTo V WHERE G.gID = V.gID AND V.vID ='" . $venueID . "'");
+				$result = executePlainSQL("SELECT * FROM Guest G, v_InvitedTo V WHERE G.gID = V.gID AND V.vID ='" . $venueID . "' order by V.vAccepted desc, G.name asc");
 				
 				while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
 					echo "<tr>
 						<td>" . $row["GID"] . "</td>
-						<td>" . $row["NAME"] . "</td>
-						<td>" . $row["TABLENO"] . "</td>";
+						<td>" . $row["NAME"] . "</td>";
+											
+						if($row["VACCEPTED"] == NULL)
+							echo "<td>N/A</td>";
+							else if($row["VACCEPTED"] == 1)
+								echo "<td>Accepted</td>";
+							else if($row["VACCEPTED"] == 0)
+								echo "<td>Declined</td>";
+							else echo "<td></td>";
 						
+						echo "<td>" . $row["TABLENO"] . "</td>";
+												
 						if ($row["MAXNUMBERALLOWED"] != null)
 						{
 							echo "<td>" . $row["MAXNUMBERALLOWED"] . "</td>";

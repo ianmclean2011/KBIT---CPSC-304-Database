@@ -37,9 +37,6 @@
 							<li>
 								<a href="vendor.php?page=vendor-home">Home</a>
 							</li>
-							<li>
-								<a href="vendor.php?page=add-quote">Add Quote</a>
-							</li>
 						</ul>
 					</div>
 

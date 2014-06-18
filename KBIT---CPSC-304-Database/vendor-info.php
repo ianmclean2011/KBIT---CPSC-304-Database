@@ -24,9 +24,7 @@
 			$name = executePlainSQL("select companyname from Vendor where gid = '". $_GET[id] . "'");
 			$nameRow = OCI_Fetch_Array($name, OCI_BOTH);
 			echo " ".$nameRow["COMPANYNAME"];	
-			/*echo "<h2>You can bring up to " . 	$nameRow["MAXNUMBERALLOWED"];
-				if($nameRow["MAXNUMBERALLOWED"] == 1) echo" guest.</h2>"; 
-				else echo " guests.</h2>";*/
+		
 			
 		?>
 		</form>
@@ -146,7 +144,7 @@
 			printProvidedResult($result);
 			
 			if(array_key_exists('remove', $_POST)){
-			echo $_POST['remove'];
+			
 			$separateValue = explode("|",$_POST['remove']);
 			$removeGid = $separateValue[0];
 			$removeItemName=$separateValue[1];

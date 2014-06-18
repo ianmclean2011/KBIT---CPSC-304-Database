@@ -12,9 +12,7 @@
 			$vendorID = $separateValue[0];
 			$itemName = $separateValue[1];
 			$compName = $separateValue[2];
-			echo $compName;
 			
-			echo "hello".$supValues['PROVIDEDNUMBER'];
 			echo '<div class="form-group">
 				<label for="itemName">Item/Service Name</label>
 				<input type="text" class="form-control" name="itemName" value="'.$itemName.'" readonly>
@@ -35,38 +33,13 @@
 		
 <?php		
 
-//this tells the system that it's no longer just parsing 
-//html; it's now parsing PHP
-
-
-
-
-
 if (array_key_exists('addProvided', $_POST)) { //If the click addSupply button
-			//parses out a list of vendor IDs
 			
-			/*$gID = 'SELECT gID FROM Vendor';
-			$pgID = oci_parse($db_conn, $gID);
-			oci_execute($pgID);
-			
-
-			//goes through the list of vendor IDs
-			while (oci_fetch($pgID)) {
-				
-				
-				$compID = oci_result($pgID, 'GID');
-				//vendor ID entered by user
-				$compID2 = $_POST[company];
-			
-				//Checks to see if the vendor ID entered matches one of a pre-existing vendor
-				if($compID2 == $compID){
-					$vendExist=1;*/
-					//Checks to see if the user entered an item and the number needed
 					if ($_POST[providedItem]== ""){
 						echo "Please enter the number of items provided.";
 					}else{	
 												
-						//Inserts the modified supply into the supplyquoted table
+						//Inserts the provided supplies into the supplyquoted table
 						$newSupply=oci_parse($db_conn,"INSERT INTO SupplyProvided VALUES (:bv_id, :bv_company, :bv_item, :bv_numProv)");
 						
 						
@@ -76,19 +49,11 @@ if (array_key_exists('addProvided', $_POST)) { //If the click addSupply button
 						oci_bind_by_name($newSupply,":bv_numProv",$_POST[providedItem]);
 						
 						oci_execute($newSupply);
-						echo $vendorID;
-						echo $itemName;
-						echo $compName;
-						echo "It worked".$_POST[totalCost];
+						
 						OCICommit($db_conn);
 						
 					}				
-				   //$vendExist = 1;
-    			   //echo $compID;
-				   
-			
-				
-				}
+				 }
 			OCILogoff($db_conn);	
 			
 	

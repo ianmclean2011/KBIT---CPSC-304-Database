@@ -4,7 +4,6 @@
 	<body>
 	<h2>Database has been reset!</h2>
 	<?php
-
 	include 'sqlFunction.php';
 	
 	$db_conn = OCILogon("ora_p7m5", "a62141049", "ug");
@@ -17,12 +16,11 @@
 			foreach($sqlFile as $sqlCommand)
 			{
 				executePlainSQL($sqlCommand);
-				echo $sqlCommand . "<br><br>";
 			}
 			
 			OCILogoff($db_conn);
 	} 
-?>
+	?>
 	</body>
 </html>
 	

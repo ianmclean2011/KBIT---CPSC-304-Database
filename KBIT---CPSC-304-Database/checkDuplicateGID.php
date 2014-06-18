@@ -1,7 +1,7 @@
 <?php
 	function checkDuplicateGID($guestID)
 	{
-		// Query for checking if the new ID already exists
+		// Query for checking if the newly generated ID already exists in Guest database
 		$cmdstr = "SELECT GID
 		   		   FROM Guest 
 				   WHERE GID = '".$guestID."'";

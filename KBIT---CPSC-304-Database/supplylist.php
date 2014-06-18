@@ -68,7 +68,7 @@
 						<td>" . $row["QUOTEDNUMBER"] ."</td>
 						<td>" . $row["UNITCOST"] ."</td>
 						<td>" . $row["TOTALCOST"] ."</td>
-						<td>"."<button type=\"submit\" class=\"btn btn-link\" name=\"remove\" value=" . $row["GID"] ."|".$row["ITEMNAME"].">Remove</button></td>
+						<td>"."<button type=\"submit\" class=\"btn btn-link\" name=\"remove\" value=\"" . $row["GID"] ."|".$row["ITEMNAME"]."\">Remove</button></td>
 					</tr>"; 
 				}
 				

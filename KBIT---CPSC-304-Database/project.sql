@@ -7,7 +7,6 @@ DROP TABLE Vendor;
 DROP TABLE DependentGuest;
 DROP TABLE Guest;
 
-
 CREATE TABLE Guest (
  gID VARCHAR2(10),
  name VARCHAR2(30),

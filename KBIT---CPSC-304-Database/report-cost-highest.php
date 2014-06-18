@@ -22,7 +22,7 @@
 				$Result = executePlainSQL($queryStringSum);
 				while ($row = OCI_Fetch_Array($Result, OCI_NUM))
 				{
-					echo "<tr><td>Total</td><td><h2>"money_format('%.2n', $row[0])."\n"."</h2></td></tr>";
+					echo "<tr><td>Total</td><td><h2>".money_format('%.2n', $row[0])."\n"."</h2></td></tr>";
 				}
 				echo "</table>";
 				$Result = executePlainSQL($queryStringPost);

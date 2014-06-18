@@ -23,33 +23,41 @@ if ($_POST)
 	
 	// Given proper input, insert the data into the Guest table
 	else 
-	{	// Creating random GID & Check that it is unique.
-		Do 	{
-		  $guestID = idGen();
+	{	// Creating a unique GID & check that it is unique.
+		$cmdstr = "SELECT COUNT(*) FROM Guest";
+		$guestCountResult = executePlainSQL($cmdstr);
+		$guestCount = oci_fetch_array($guestCountResult, OCI_BOTH);
+		$guestSeed = intval($guestCount["COUNT(*)"]);
+		$guestType = 1; // 1 for guests, 2 for vendors
+		Do{
+			$guestID = idGen($guestType, $guestSeed++); // Tries to find an unused ID
 		} while (checkDuplicateGID($guestID));
 
-		// Creating Insertion SQL query
-		$cmdstr = "INSERT INTO Guest (GID, name, maxnumberallowed, numberBringing) VALUES ('"
-		.$guestID."', '".
-		$_POST["firstName"]." ".$_POST["lastName"]."', ".
-		$_POST["extraGuests"].", 0)";
+		//If guestID is null, then all assignable unique IDs have been used. Do not proceed.
+		if ($guestID == null) {
+			  echo "Unable to add guest, all assignable IDs have been used.";
+		} else {
 
-		// Executing the query
-		executePlainSQL($cmdstr);
-		OCICommit($db_conn);
+			// Creating Insertion SQL query
+			$cmdstr = "INSERT INTO Guest (GID, name, maxnumberallowed, numberBringing) VALUES ('"
+			.$guestID."', '".
+			$_POST["firstName"]." ".$_POST["lastName"]."', ".
+			$_POST["extraGuests"].", 0)";
 
-		// Display Insertion summary
-		echo "<h2>The guest is added successfully. </h2><br>";
-		echo "<h3> Name : ".$_POST["firstName"]." ".$_POST["lastName"]."<br>";
-		echo "Number of extra guests allowed : ".$_POST["extraGuests"]."<br>";
-		echo "Guest ID : <b>".$guestID."</b></h3><br>";
-		echo "<h3>Please inform the guest to use this ID for the access.</h3><br>";
+			// Executing the query
+			executePlainSQL($cmdstr);
+			OCICommit($db_conn);
 
-
+			// Display Insertion summary
+			echo "<h2>The guest is added successfully. </h2><br>";
+			echo "<h3> Name : ".$_POST["firstName"]." ".$_POST["lastName"]."<br>";
+			echo "Number of extra guests allowed : ".$_POST["extraGuests"]."<br>";
+			echo "Guest ID : <b>".$guestID."</b></h3><br>";
+			echo "<h3>Please inform the guest to use this ID for the access.</h3><br>";
+		}
+		
 	}
 }
-
-
 
 ?>
 

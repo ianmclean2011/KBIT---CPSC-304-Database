@@ -28,8 +28,7 @@
 
 <?php
 
-//this tells the system that it's no longer just parsing 
-//html; it's now parsing PHP
+include 'idGen.php';
 
 $success = True; //keep track of errors so it redirects the page only if there are no errors
 $db_conn = OCILogon("ora_p7m5", "a62141049", "ug");
@@ -113,19 +112,31 @@ function printResult($result) { //prints results from a select statement
 // Connect Oracle...
 if ($db_conn) {
 
-	if (array_key_exists('findName', $_POST)) {
+	if (array_key_exists('findName', $_POST)) 
+	{
 		if($_POST[firstName] == "" && $_POST[lastName] == "")
-			echo "<br>Please enter your first name, last name or the ID # on your invitation";
-		else{
+		{
+			echo "<br>Please enter your first name and/or last name.";
+		}
+		else
+		{
 			$result = executePlainSQL("select gid, name from Guest where lower(name) like '%' || lower('". $_POST[firstName] ."') || '%' || lower('" . $_POST[lastName] . "') || '%'");
 			printResult($result);
 		}
-	} else
-		if (array_key_exists('findID', $_POST)) {
-		$result = executePlainSQL("select gid, name from Guest where gid = ". $_POST[id]);
-		printResult($result);
+	} 
+	else if (array_key_exists('findID', $_POST))
+	{
+		if (idValidate($_POST[id]))
+		{
+			$result = executePlainSQL("select gid, name from Guest where gid = ". $_POST[id]);
+			printResult($result);
+		}
+		else
+		{
+			echo "<br>You have entered an invalid ID, please check your ID and try again.";
 		} 
-
+	}
+	
 	//Commit to save changes...
 	OCILogoff($db_conn);
 } else {

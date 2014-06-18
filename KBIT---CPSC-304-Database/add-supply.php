@@ -108,19 +108,7 @@ if (array_key_exists('addsupply', $_POST)) { //If the click addSupply button
 				}
 			OCILogoff($db_conn);	
 			}
-			
-			/*Getting the values from user and insert data into the table
-			$tuple = array (
-				":bind1" => $_POST['insNo'],
-				":bind2" => $_POST['insName']
-			);
-			$alltuples = array (
-				$tuple
-			);
-			executeBoundSQL("insert into tab1 values (:bind1, :bind2)", $alltuples);
-			OCICommit($db_conn);
-			*/
-		 
+	
 ?>
 		
 	</body>

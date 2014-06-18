@@ -79,8 +79,10 @@
 						<td>" . $row["QUOTEDNUMBER"] ."</td>
 						<td>" . $row["UNITCOST"] ."</td>
 						<td>" . $row["TOTALCOST"] ."</td>
-						<td>"."<button type=\"submit\" class=\"btn btn-link\" name=\"modify\" value=\"" . $row["GID"] ."|".$row["ITEMNAME"]."\">Modify</button></td>
-					</tr>"; 
+						<td><a href=\"vendor.php?id=".$row["GID"]."|".$row["ITEMNAME"]."&page=modify-quote\">Select</a></td>
+						</tr>"; 
+						//<td>"."<button type=\"submit\" class=\"btn btn-link\" name=\"modify\" value=\"" . $row["GID"] ."|".$row["ITEMNAME"]."\">Modify</button></td>
+					
 				}
 				
 			}

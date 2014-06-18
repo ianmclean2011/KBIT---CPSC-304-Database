@@ -42,12 +42,16 @@
 				}
 				return $statement;
 			}
-			$venueCount = executePlainSQL("select vName as Name, count from venue v, (select vid, count(*) as count from v_invitedTo group by vid) i where v.vid = i.vid");
+			$venueCount = executePlainSQL("select vName as Name, (count + dcount) as total 
+											from venue v, 
+												(select vid, count(*) as count, sum(dcount) as dcount from v_invitedto v left join 
+													(select gid as dgid, count(*) as dCount from dependentguest d group by gid) on v.gid = dgid where v.vAccepted = 1 group by vid) i 
+														where v.vid = i.vid");
 			
 			echo "<table class='table table-striped'><tr><th>Venue Name</th><th>Count</th></tr>";
 			
 			while($venueCountRow = OCI_Fetch_Array($venueCount, OCI_BOTH)){
-				echo "<tr><td>" . $venueCountRow['NAME'] . "</td><td>" . $venueCountRow['COUNT'] . "</td></tr>";
+				echo "<tr><td>" . $venueCountRow['NAME'] . "</td><td>" . $venueCountRow['TOTAL'] . "</td></tr>";
 			}
 						
 			echo "</table>";
@@ -58,20 +62,30 @@
 					<tr>
 						<th>Guest ID</th>
 						<th>Guest Name</th>
+						<th>Accepted</th>
 						<th>Table #</th>
 						<th>Max # of Guests Allowed</th>
 						<th>Bringing # of Guests</th>
 						<th>Dependent Guests(s)</th>
 					</tr>";
 				
-				$result = executePlainSQL("SELECT * FROM Guest G, v_InvitedTo V WHERE G.gID = V.gID AND V.vID ='" . $venueID . "'");
+				$result = executePlainSQL("SELECT * FROM Guest G, v_InvitedTo V WHERE G.gID = V.gID AND V.vID ='" . $venueID . "' order by V.vAccepted desc, G.name asc");
 				
 				while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
 					echo "<tr>
 						<td>" . $row["GID"] . "</td>
-						<td>" . $row["NAME"] . "</td>
-						<td>" . $row["TABLENO"] . "</td>";
+						<td>" . $row["NAME"] . "</td>";
+											
+						if($row["VACCEPTED"] == NULL)
+							echo "<td>N/A</td>";
+							else if($row["VACCEPTED"] == 1)
+								echo "<td>Accepted</td>";
+							else if($row["VACCEPTED"] == 0)
+								echo "<td>Declined</td>";
+							else echo "<td></td>";
 						
+						echo "<td>" . $row["TABLENO"] . "</td>";
+												
 						if ($row["MAXNUMBERALLOWED"] != null)
 						{
 							echo "<td>" . $row["MAXNUMBERALLOWED"] . "</td>";

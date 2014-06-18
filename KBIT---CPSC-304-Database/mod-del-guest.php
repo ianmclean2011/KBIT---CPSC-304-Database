@@ -46,16 +46,17 @@ if($_REQUEST["deleteGuest"])
 
 else if($_REQUEST["changeGuest"])
 {
-	if (is_null($_REQUEST['newName']))
+	if (($_REQUEST['newName'] ==''))
 	$newName = $_REQUEST['oldName'];
 	else $newName = $_REQUEST['newName'];
 
-	if (is_null($_REQUEST['newMax']))
+	if (($_REQUEST['newMax'] ==''))
 	$newMax = $_REQUEST['oldMax'];
 	else $newMax = $_REQUEST['newMax'];
 
 	// Check for non-alphabetic letter for first and last name;
-	if (ctype_digit($newName))
+	$newNameNoSpace = str_replace(' ', '', $newName);
+	if (!ctype_alpha($newNameNoSpace))
 		echo "<SCRIPT>alert('Your first/last name can\'t contain number/symbol.');</SCRIPT>";
 	// Check for non-digit letter for extraGuests;
 	else if (!ctype_digit($newMax))
@@ -90,7 +91,7 @@ while ($row = OCI_Fetch_Array($result, OCI_NUM))
 	// Link for deleting a tuple with specific GID
 	echo "<form action=\"".$_PHP_SELF. "\" method=\"POST\">";
 	echo "<input type=\"hidden\" name=\"deleteGuest\" value=\"".$gID."\">";
-	echo "<input type=image src=\"image\delete.png\" type=\"submit\" width=20 height=20 alt=\"Submit Form\" ></form>";
+	echo "<input type=image src=\"image\delete.png\" type=\"submit\" width=20 height=20 alt=\"Delete\" ></form>";
 	echo "</td>";
 	// Rest of the info about the guest
 	echo "<td>".$gID."</td>";

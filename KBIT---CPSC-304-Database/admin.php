@@ -46,9 +46,6 @@
 									<li>
 										<a href="admin.php?page=mod-del-guest">Modify Guest</a>
 									</li>
-									<li>
-										<a href="admin.php?page=tables">Tables</a>
-									</li>
 								</ul>
 							</li>
 
@@ -94,9 +91,6 @@
 								<ul class="dropdown-menu">
 									<li>
 										<a href="admin.php?page=reports">Reports</a>
-									</li>
-									<li>
-										<a href="admin.php?page=generate-report">Generate Report</a>
 									</li>
 								</ul>
 							</li>

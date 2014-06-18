@@ -37,9 +37,6 @@
 							<li>
 								<a href="guest.php?page=guest-home">Home</a>
 							</li>
-							<li>
-								<a href="guest.php?page=rsvp">RSVP</a>
-							</li>
 						</ul>
 					</div>
 

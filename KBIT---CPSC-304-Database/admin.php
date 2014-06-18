@@ -46,6 +46,9 @@
 									<li>
 										<a href="admin.php?page=mod-del-guest">Modify Guest</a>
 									</li>
+									<li>
+										<a href="admin.php?page=guest-div">Guests Attending All</a>
+									</li>
 								</ul>
 							</li>
 

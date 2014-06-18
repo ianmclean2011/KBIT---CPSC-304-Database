@@ -16,20 +16,19 @@ CREATE TABLE Guest (
 
 CREATE TABLE DependentGuest(
  gID VARCHAR2(10),
- dID CHAR(10),
+ dID VARCHAR2(10),
  name VARCHAR2(30),
  PRIMARY KEY (dID, gID),
- FOREIGN KEY (gID) REFERENCES Guest
- ON DELETE CASCADE);
+ FOREIGN KEY (gID) REFERENCES Guest ON DELETE CASCADE);
 
 CREATE TABLE Vendor(
  gID VARCHAR2(10),
  companyName VARCHAR2(30),
  PRIMARY KEY (gID, companyName),
- FOREIGN KEY (gID) REFERENCES Guest);
+ FOREIGN KEY (gID) REFERENCES Guest ON DELETE CASCADE);
 
 CREATE TABLE Venue(
- vID CHAR(6),
+ vID VARCHAR2(10),
  vCapacity INTEGER,
  usage VARCHAR2(20),
  vName VARCHAR2(100),
@@ -38,13 +37,13 @@ CREATE TABLE Venue(
 
 CREATE TABLE v_InvitedTo(
  gID VARCHAR2(10),
- vID CHAR(6),
+ vID VARCHAR2(6),
  vAccepted INTEGER,
  tableNo INTEGER,
  numSeats INTEGER,
  PRIMARY KEY (gID, vID),
- FOREIGN KEY (gID) REFERENCES Guest,
- FOREIGN KEY (vID) REFERENCES Venue);
+ FOREIGN KEY (gID) REFERENCES Guest ON DELETE CASCADE,
+ FOREIGN KEY (vID) REFERENCES Venue ON DELETE CASCADE);
 
 CREATE TABLE SupplyQuoted(
  gID VARCHAR2(10),
@@ -66,15 +65,6 @@ CREATE TABLE SupplyProvided(
  FOREIGN KEY (gID) REFERENCES Guest,
  FOREIGN KEY (gID, companyName) REFERENCES Vendor);
 
-CREATE TABLE SupplyUsedFor(
- vID CHAR(6),
- gID VARCHAR2(10),
- companyName VARCHAR2(30),
- itemName VARCHAR2(30),
- qty INTEGER,
- PRIMARY KEY (vID, gID, companyName, itemName),
- FOREIGN KEY (vID) REFERENCES Venue,
- FOREIGN KEY (gID, companyName, itemName) REFERENCES SupplyProvided);
 
 INSERT INTO Guest VALUES ('100000470','Amy Liu',0,0);
 INSERT INTO Guest VALUES ('100001767','Ben Nguyen',0,0);
@@ -342,13 +332,6 @@ INSERT INTO SupplyProvided VALUES ('200003911','AB Rentals','Chairs',150);
 INSERT INTO SupplyProvided VALUES ('200004687','Vancouver Limo','Limosine Service',13);
 INSERT INTO SupplyProvided VALUES ('200006906','DJ SoReal','DJ Service',10);
 INSERT INTO SupplyProvided VALUES ('200000156','SoWedding','Videography',1);
-
-INSERT INTO SupplyUsedFor VALUES (1,'200000156','SoWedding','Photography',1);
-INSERT INTO SupplyUsedFor VALUES (2,'200002244','Riverway Clubhouse','Catering',185);
-INSERT INTO SupplyUsedFor VALUES (1,'200003911','AB Rentals','Chairs',150);
-INSERT INTO SupplyUsedFor VALUES (1,'200004687','Vancouver Limo','Limosine Service',13);
-INSERT INTO SupplyUsedFor VALUES (2,'200006906','DJ SoReal','DJ Service',10);
-INSERT INTO SupplyUsedFor VALUES (1,'200000156','SoWedding','Videography',1);
 
 
 

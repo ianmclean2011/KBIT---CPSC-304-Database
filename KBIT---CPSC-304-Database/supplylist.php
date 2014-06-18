@@ -81,7 +81,7 @@
 			printResult($result);
 			
 			if(array_key_exists('remove', $_POST)){
-			echo $_POST['remove'];
+			
 			$separateValue = explode("|",$_POST['remove']);
 			$removeGid = $separateValue[0];
 			$removeItemName=$separateValue[1];

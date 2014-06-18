@@ -86,7 +86,7 @@ if (array_key_exists('addsupply', $_POST)) { //If the click addSupply button
 						$company = oci_parse($db_conn,$compSearch);
 						oci_execute($company);
 						$compName=oci_fetch_array($company, OCI_BOTH);
-						echo $compName['COMPANYNAME'];
+						
 						
 						//Inserts the new supply into the supplyquoted table
 						$newSupply=oci_parse($db_conn,"INSERT INTO SupplyQuoted VALUES (:bv_id, :bv_company, :bv_item, :bv_number,0,0)");
@@ -96,7 +96,6 @@ if (array_key_exists('addsupply', $_POST)) { //If the click addSupply button
 						oci_bind_by_name($newSupply,":bv_number",$_POST[neededItem]);
 						oci_execute($newSupply);
 						
-						echo "It worked";
 						OCICommit($db_conn);
 					}					
 				   //$vendExist = 1;

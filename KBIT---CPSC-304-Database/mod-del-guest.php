@@ -70,7 +70,7 @@ else if($_REQUEST["changeGuest"])
 	// Check for non-alphabetic letter for first and last name;
 	$newNameNoSpace = str_replace(' ', '', $newName);
 	if (!ctype_alpha($newNameNoSpace))
-		echo "<SCRIPT>alert('Your first/last name can\'t contain number/symbol.');</SCRIPT>";
+		echo "<SCRIPT>alert('Your name can\'t contain number/symbol.');</SCRIPT>";
 	// Check for non-digit letter for extraGuests;
 	else if (!ctype_digit($newMax))
 		echo "<SCRIPT>alert('Please use digits for the number of extra guests entry.');</SCRIPT>";

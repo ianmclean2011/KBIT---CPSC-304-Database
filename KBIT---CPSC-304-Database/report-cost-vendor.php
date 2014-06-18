@@ -1,4 +1,7 @@
 				<?php
+				setlocale(LC_MONETARY, 'en_CA');
+
+
 				$queryString = "CREATE VIEW VendorTCost AS 
 								SELECT sp.companyName, sp.itemName, sp.providedNumber * sq.unitCost AS totalCost
 								FROM SupplyProvided sp, SupplyQuoted sq
@@ -20,12 +23,12 @@
 				{
 					echo "<tr><td>".$row[0]."</td>";
 					echo "<td>".$row[1]."</td>";
-					echo "<td>".$row[2]."</td></tr>";
+					echo "<td>".money_format('%.2n', $row[2])."</td></tr>";
 				}
 				$Result = executePlainSQL($queryStringSum);
 				while ($row = OCI_Fetch_Array($Result, OCI_NUM))
 				{
-					echo "<tr><td>Total</td><td></td><td><h2>".$row[0]."</h2></td></tr>";
+					echo "<tr><td>Total</td><td></td><td><h2>".money_format('%.2n', $row[0])."</h2></td></tr>";
 				}
 				echo "</table>";
 
@@ -35,12 +38,12 @@
 				while ($row = OCI_Fetch_Array($Result, OCI_NUM))
 				{
 					echo "<tr><td>".$row[0]."</td><td></td>";
-					echo "<td>".$row[1]."</td></tr>";
+					echo "<td>".money_format('%.2n', $row[1])."</td></tr>";
 				}
 				$Result = executePlainSQL($queryStringSum);
 				while ($row = OCI_Fetch_Array($Result, OCI_NUM))
 				{
-					echo "<tr><td>Total</td><td></td><td><h2>".$row[0]."</h2></td></tr>";
+					echo "<tr><td>Total</td><td></td><td><h2>".money_format('%.2n', $row[0])."</h2></td></tr>";
 				}
 				echo "</table>";
 

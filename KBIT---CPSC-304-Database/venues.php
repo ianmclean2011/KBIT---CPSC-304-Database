@@ -40,7 +40,7 @@
 			if(in_array("address", $_POST['columns']))
 				echo "<th>Address</th>";
 				else echo "<th></th>";
-			if(in_array("usage", $_POST['columns']))
+			if(in_array("capacity", $_POST['columns']))
 				echo "<th>Capacity</th>";
 				else echo "<th></th>";
 				

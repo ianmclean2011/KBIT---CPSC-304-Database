@@ -16,7 +16,7 @@ CREATE TABLE Guest (
 
 CREATE TABLE DependentGuest(
  gID VARCHAR2(10),
- dID CHAR(10),
+ dID VARCHAR2(10),
  name VARCHAR2(30),
  PRIMARY KEY (dID, gID),
  FOREIGN KEY (gID) REFERENCES Guest
@@ -29,7 +29,7 @@ CREATE TABLE Vendor(
  FOREIGN KEY (gID) REFERENCES Guest);
 
 CREATE TABLE Venue(
- vID CHAR(6),
+ vID VARCHAR2(10),
  vCapacity INTEGER,
  usage VARCHAR2(20),
  vName VARCHAR2(100),
@@ -38,7 +38,7 @@ CREATE TABLE Venue(
 
 CREATE TABLE v_InvitedTo(
  gID VARCHAR2(10),
- vID CHAR(6),
+ vID VARCHAR2(6),
  vAccepted INTEGER,
  tableNo INTEGER,
  numSeats INTEGER,
@@ -67,7 +67,7 @@ CREATE TABLE SupplyProvided(
  FOREIGN KEY (gID, companyName) REFERENCES Vendor);
 
 CREATE TABLE SupplyUsedFor(
- vID CHAR(6),
+ vID VARCHAR2(6),
  gID VARCHAR2(10),
  companyName VARCHAR2(30),
  itemName VARCHAR2(30),

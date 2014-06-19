@@ -83,7 +83,7 @@ if (array_key_exists('modifyQuote', $_POST)) { //If the click addSupply button
 						oci_bind_by_name($newSupply,":bv_uCost",$_POST[unitCost]);
 						oci_execute($newSupply);
 						
-						echo "It worked".$_POST[totalCost];
+					
 						OCICommit($db_conn);
 						
 					}				

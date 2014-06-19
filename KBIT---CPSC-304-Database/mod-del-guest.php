@@ -41,12 +41,26 @@ include 'sqlFunction.php';
 <?php
 	//Update invitations
 	if(array_key_exists('venues', $_POST)){
+		
+			$inviteCheck = executePlainSQL("select * from v_invitedto where gid ='" . $_REQUEST["changeGuest"] . "'");
+			
+			$currVenues = array();
+			
+			while($inviteCheckRow = oci_fetch_array($inviteCheck)){
+				if(!in_array($inviteCheckRow['VID'], $_POST['venues'])){
+					executePlainSQL("delete from v_invitedto where vid ='" . $inviteCheckRow['VID']. "' and gid = '" . $_REQUEST["changeGuest"] . "'");
+					OCICommit($db_conn);
+				}
+				array_push($currVenues, $inviteCheckRow['VID']);
+			}
+				
 			foreach($_POST['venues'] as $i){
-			executePlainSQL("INSERT INTO v_InvitedTo VALUES ('" . $_REQUEST["changeGuest"] . "','". $i . "', NULL,NULL,NULL)");
-			OCICommit($db_conn);
+				if(!in_array($i, $currVenues)){
+					executePlainSQL("INSERT INTO v_InvitedTo VALUES ('" . $_REQUEST["changeGuest"] . "','". $i . "', NULL,NULL,NULL)");
+					OCICommit($db_conn);
+				}	
 			}
 	}
-
 // Delete Tuple of guest with specific GID
 if($_REQUEST["deleteGuest"])
 {
@@ -139,6 +153,7 @@ while ($row = OCI_Fetch_Array($result, OCI_NUM))
 	echo "<td><input type=\"hidden\" name=\"changeGuest\" value=\"".$gID."\"></td>";
 	echo "<td></td>";
 	echo "<td>";
+		echo "<input type=\"hidden\" name=\"venues\" value=\"\">";
 		$venue = executePlainSQL("SELECT vid, usage FROM venue");
 		$i=0;
 		while($venueRow = oci_fetch_array($venue)){

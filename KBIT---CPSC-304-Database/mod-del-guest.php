@@ -35,7 +35,7 @@ include 'sqlFunction.php';
 
 <?php
 // Delete Tuple of guest with specific GID
-if($_REQUEST["deleteGuest"])
+if($_REQUEST['deleteGuest'])
 {
   	echo "<h2>The guest is deleted successfully. </h2><br>";
 
@@ -44,13 +44,23 @@ if($_REQUEST["deleteGuest"])
 	 OCICommit($db_conn);
 }
 
-else if($_REQUEST["changeGuest"])
+else if($_REQUEST['changeGuest'])
 {
-	if (($_REQUEST['newName'] ==''))
+	// Query to get the # of extra guests in order to compare with new max # update
+	$sqlcmd = "SELECT numberBringing 
+		   FROM Guest
+		   WHERE gID = '".$_REQUEST['changeGuest']."'";
+	$result = executePlainSQL($sqlcmd);
+	while ($row = OCI_Fetch_Array($result, OCI_NUM))
+	{
+		$oldExtraG = $row[0];
+	} //
+
+	if ($_REQUEST['newName'] =='')
 	$newName = $_REQUEST['oldName'];
 	else $newName = $_REQUEST['newName'];
 
-	if (($_REQUEST['newMax'] ==''))
+	if ($_REQUEST['newMax'] =='')
 	$newMax = $_REQUEST['oldMax'];
 	else $newMax = $_REQUEST['newMax'];
 
@@ -61,6 +71,9 @@ else if($_REQUEST["changeGuest"])
 	// Check for non-digit letter for extraGuests;
 	else if (!ctype_digit($newMax))
 		echo "<SCRIPT>alert('Please use digits for the number of extra guests entry.');</SCRIPT>";
+	// Check that #Extra Guest Allowed cannot be smaller than #Extra Guest a person is already bringing.
+	else if ($newMax < $oldExtraG)
+		echo "<SCRIPT>alert('You cannot update max# of extra guests lower than already he/she is bringing.');</SCRIPT>";
 	else 
 	{
      $cmdstr = "UPDATE Guest SET name='".$newName."', maxNumberAllowed=".$newMax. " WHERE gID = '".$_REQUEST['changeGuest']."'";

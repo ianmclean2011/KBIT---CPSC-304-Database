@@ -51,7 +51,10 @@
 			echo "<table class='table table-striped'><tr><th>Venue Name</th><th>Count</th></tr>";
 			
 			while($venueCountRow = OCI_Fetch_Array($venueCount, OCI_BOTH)){
-				echo "<tr><td>" . $venueCountRow['NAME'] . "</td><td>" . $venueCountRow['TOTAL'] . "</td></tr>";
+						
+				if($venueCountRow['TOTAL'] == "")	
+					echo "<tr><td>" . $venueCountRow['NAME'] . "</td><td>" . 1 . "</td></tr>";
+				else echo "<tr><td>" . $venueCountRow['NAME'] . "</td><td>" . $venueCountRow['TOTAL'] . "</td></tr>";
 			}
 						
 			echo "</table>";

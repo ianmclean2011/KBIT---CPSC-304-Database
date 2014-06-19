@@ -55,8 +55,16 @@ if ($_POST)
 			echo "Guest ID : <b>".$guestID."</b></h3><br>";
 			echo "<h3>Please inform the guest to use this ID for the access.</h3><br>";
 		}
-		
+	
+		if(array_key_exists('venues', $_POST)){
+			foreach($_POST['venues'] as $i){
+			executePlainSQL("INSERT INTO v_InvitedTo VALUES ('" . $guestID . "','". $i . "', NULL,NULL,NULL)");
+			OCICommit($db_conn);
+			}
+		}
 	}
+
+
 }
 
 ?>
@@ -79,6 +87,19 @@ if ($_POST)
 		<div class="form-group">
 			<label for="extraGuests">Number of extra guests</label>
 			<input type="number" class="form-control" name="extraGuests" placeholder="#" size="2">
+		</div>
+		<div class="form-group">
+			<label for="invite">Invite to</label>
+			<?php
+			$venues = executePlainSQL("select vid, vname, usage from venue");
+			
+			$i=0;
+			while($venueRow = oci_fetch_array($venues)){
+			echo "<input type=\"checkbox\" name=\"venues[" . $i . "]\" value=\"" . $venueRow['VID'] . "\">" . 
+			"<b>" . $venueRow['USAGE'] . "</b> - " . $venueRow['VNAME'] . "   ";
+			$i++;
+			}
+			?>
 		</div>
 		<button type="submit" class="btn btn-default">
 			Add

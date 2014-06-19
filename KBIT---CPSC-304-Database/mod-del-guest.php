@@ -12,28 +12,55 @@ include 'sqlFunction.php';
 </head>
 <body>
 <h1>Delete/Modify Guest</h1><br>
-<table width=100%>
+<table class='table table-striped'>
 	<tr>
-		<th width=3%> 
+		<th> 
 		</th>
-		<th width=7%>
+		<th>
 			Guest ID
 		</th>
-		<th width=30%>
+		<th>
 			Name
 		</th>
-		<th width=10%>
+		<th>
 			# Extra Guest Allowed
 		</th>
-		<th width=10%>
+		<th>
 			# Extra Guest Bringing
 		</th>
-		<th width=30%>
+		<th>
 			Extra Guest Name
+		</th>
+		<th>
+			Invitations
+		</th>
+		<th>
 		</th>
 	</tr>
 
 <?php
+	//Update invitations
+	if(array_key_exists('venues', $_POST)){
+		
+			$inviteCheck = executePlainSQL("select * from v_invitedto where gid ='" . $_REQUEST["changeGuest"] . "'");
+			
+			$currVenues = array();
+			
+			while($inviteCheckRow = oci_fetch_array($inviteCheck)){
+				if(!in_array($inviteCheckRow['VID'], $_POST['venues'])){
+					executePlainSQL("delete from v_invitedto where vid ='" . $inviteCheckRow['VID']. "' and gid = '" . $_REQUEST["changeGuest"] . "'");
+					OCICommit($db_conn);
+				}
+				array_push($currVenues, $inviteCheckRow['VID']);
+			}
+				
+			foreach($_POST['venues'] as $i){
+				if(!in_array($i, $currVenues)){
+					executePlainSQL("INSERT INTO v_InvitedTo VALUES ('" . $_REQUEST["changeGuest"] . "','". $i . "', NULL,NULL,NULL)");
+					OCICommit($db_conn);
+				}	
+			}
+	}
 // Delete Tuple of guest with specific GID
 if($_REQUEST["deleteGuest"])
 {
@@ -57,7 +84,7 @@ else if($_REQUEST["changeGuest"])
 	// Check for non-alphabetic letter for first and last name;
 	$newNameNoSpace = str_replace(' ', '', $newName);
 	if (!ctype_alpha($newNameNoSpace))
-		echo "<SCRIPT>alert('Your first/last name can\'t contain number/symbol.');</SCRIPT>";
+		echo "<SCRIPT>alert('Your name can\'t contain number/symbol.');</SCRIPT>";
 	// Check for non-digit letter for extraGuests;
 	else if (!ctype_digit($newMax))
 		echo "<SCRIPT>alert('Please use digits for the number of extra guests entry.');</SCRIPT>";
@@ -70,8 +97,6 @@ else if($_REQUEST["changeGuest"])
 	 echo "<h2>The guest info is updated. </h2><br>";
 	}
 }
-
-
 
 $result = executePlainSQL("SELECT * FROM Guest");
 $oddRow=true; // For table alternating color
@@ -86,7 +111,7 @@ while ($row = OCI_Fetch_Array($result, OCI_NUM))
 	$maxDG = $row[2];
 	$numDG = $row[3];
 
-	echo "<tr bgcolor=".$color1." id='".$gID."'>"; // A simple alternating background color stuff
+	echo "<tr id='".$gID."'>"; // A simple alternating background color stuff
 	echo "<td>";
 	// Link for deleting a tuple with specific GID
 	echo "<form action=\"".$_PHP_SELF. "\" method=\"POST\">";
@@ -109,20 +134,44 @@ while ($row = OCI_Fetch_Array($result, OCI_NUM))
 		echo $row2[0]."<br>";
 	}
 	echo "</td>";
+	
+	echo "<td></td>";
+	
 	echo "</tr>";
 
 		//This row contains form for editing
-	echo "<tr bgcolor=".$color1." id='edit".$gID."'>";
+	echo "<tr id='edit".$gID."'>";
 	echo "<td></td>";
 	echo "<td></td>";
 	echo "<td><form action=\"".$_PHP_SELF. "\" method=\"POST\">";
-	echo "<input type=\"text\" name=\"newName\" >";
+	echo "<input type=\"text\" name=\"newName\" placeholder = \"New Name\">";
 	echo "<input type=\"hidden\" name=\"oldName\" value=\"".$name."\">";
 	echo "</td>";
-	echo "<td><input type=\"text\" name =\"newMax\" >";
+	echo "<td><input type=\"text\" name =\"newMax\" placeholder = \"Max Guests\">";
 	echo "<input type=\"hidden\" name=\"oldMax\" value=".$maxDG.">";
 	echo "</td>";
 	echo "<td><input type=\"hidden\" name=\"changeGuest\" value=\"".$gID."\"></td>";
+	echo "<td></td>";
+	echo "<td>";
+		echo "<input type=\"hidden\" name=\"venues\" value=\"\">";
+		$venue = executePlainSQL("SELECT vid, usage FROM venue");
+		$i=0;
+		while($venueRow = oci_fetch_array($venue)){
+			
+		$inviteCheck = executePlainSQL("select * from v_invitedto where vid = '" . $venueRow['VID'] . "' and gid = '" . $gID . "'");	
+			
+		if($inviteCheck = oci_fetch_array($inviteCheck)){	
+		echo "<input type=\"checkbox\" name=\"venues[" . $i . "]\" value=\"" . $venueRow['VID'] . "\" checked>" . 
+		"<b>" . $venueRow['USAGE'] . "<br>";
+		}
+		
+		else{
+		echo "<input type=\"checkbox\" name=\"venues[" . $i . "]\" value=\"" . $venueRow['VID'] . "\">" . 
+		"<b>" . $venueRow['USAGE'] . "<br>";
+		}
+		$i++;
+		}
+	echo "</td>";
 	echo "<td align=right><button type=\"submit\">Update</td></form>";
 	echo "</tr>";
 	// hides edit form initially.

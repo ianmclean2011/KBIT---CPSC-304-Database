@@ -149,7 +149,7 @@ while ($row = OCI_Fetch_Array($result, OCI_NUM))
 	echo "</td>";
 	
 	echo "<td></td>";
-	
+	echo "<td></td>";
 	echo "</tr>";
 
 		//This row contains form for editing
